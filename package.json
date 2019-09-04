@@ -1,6 +1,6 @@
 {
-  "name": "round-slider",
-  "version": "0.1.0",
+  "name": "@thomasloven/round-slider",
+  "version": "0.2.0",
   "description": "",
   "main": "round-slider.js",
   "module": "src/main.js",
@@ -18,7 +18,7 @@
     "watch": "rollup -w -c",
     "prepublishOnly": "rollup -c"
   },
-  "keywords": [],
+  "keywords": ["slider", "round-slider", "webcomponent", "litElement"],
   "author": "thomasloven",
   "license": "MIT",
   "files": [
