@@ -79,7 +79,6 @@ class RoundSlider extends LitElement {
         this._rArc*Math.sin(this._start) + margin,
         this._rArc*Math.sin(this._end) + margin
       );
-    th
 
     let left = this._r0;
     if(!this._angleInside(180))
