@@ -114,6 +114,11 @@ class RoundSlider extends LitElement {
       this._rotation = false;
       this.dispatchEvent(event);
       this.dragging = false;
+
+      if(this.low && this.low >= 0.99*this.max)
+        this._reverseOrder = true;
+      else
+        this._reverseOrder = false;
     }
   }
 
@@ -236,7 +241,7 @@ class RoundSlider extends LitElement {
           : svg`
           <g class="handles">
           ${ this.low !== undefined
-            ? this.low >= (0.99*this.max)
+            ? this._reverseOrder
               ? html`${this._renderHandle("high")} ${this._renderHandle("low")}`
               : html`${this._renderHandle("low")} ${this._renderHandle("high")}`
             : html`${this._renderHandle("value")}`
