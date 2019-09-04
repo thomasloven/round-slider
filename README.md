@@ -1,7 +1,8 @@
 # round-slider
 
-A round slider webcomponent
+A simple round slider webcomponent
 
+![single](https://user-images.githubusercontent.com/1299821/64284907-e48d9100-cf5a-11e9-99ed-07afbfb1eada.png)
 
 ## Properties
 
@@ -42,3 +43,7 @@ The following css variables can be used to change the styles:
 - `--round-slider-high-handle-color` - color of high handle (overrides `--round-slider-handle-color`)
 - `--round-slider-path-width` - bar width in pixels (default: 3)
 - `--round-slider-linecap` - svg linecaps of bar (default: `round`)
+
+## Examples
+See [example.html](http://htmlpreview.github.io/?https://github.com/thomasloven/round-slider/blob/master/example.html) for usage examples.
+![Examples](https://user-images.githubusercontent.com/1299821/64284861-c9bb1c80-cf5a-11e9-830f-11951f84596d.png)

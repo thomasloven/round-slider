@@ -67,10 +67,10 @@
         stroke: var(--round-slider-path-color, lightgray);
       }
       .bar {
-        stroke: var(--round-slider-bar-color, lightblue);
+        stroke: var(--round-slider-bar-color, deepskyblue);
       }
       .handles {
-        fill: var(--round-slider-handle-color, var(--round-slider-bar-color, lightblue));
+        fill: var(--round-slider-handle-color, var(--round-slider-bar-color, deepskyblue));
       }
       .handles .low {
         fill: var(--round-slider-low-handle-color);
