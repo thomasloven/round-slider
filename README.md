@@ -45,5 +45,5 @@ The following css variables can be used to change the styles:
 - `--round-slider-linecap` - svg linecaps of bar (default: `round`)
 
 ## Examples
-See [example.html](http://htmlpreview.github.io/?https://github.com/thomasloven/round-slider/blob/master/example.html) for usage examples.
+See [example.html](https://rawcdn.githack.com/thomasloven/round-slider/f128c45eb514dc790667d5dcb54acc55ceb2fc9d/example.html) for usage examples.
 ![Examples](https://user-images.githubusercontent.com/1299821/64284861-c9bb1c80-cf5a-11e9-830f-11951f84596d.png)
