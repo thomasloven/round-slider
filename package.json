@@ -1,6 +1,6 @@
 {
   "name": "round-slider",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "",
   "main": "round-slider.js",
   "dependencies": {
@@ -21,6 +21,6 @@
     "watch": "rollup -w -c"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "author": "thomasloven",
+  "license": "MIT"
 }

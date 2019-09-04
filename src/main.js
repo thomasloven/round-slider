@@ -23,15 +23,7 @@ class RoundSlider extends LitElement {
   @property({type: Number}) handleSize = 6;
   @property({type: Boolean}) disabled = false;
 
-  @property({type: Boolean}) _dragging = false;
-
-  constructor() {
-    super();
-    document.addEventListener('mouseup', this.dragEnd.bind(this));
-    document.addEventListener('touchend', this.dragEnd.bind(this), {passive: false});
-    document.addEventListener('mousemove', this.drag.bind(this));
-    document.addEventListener('touchmove', this.drag.bind(this), {passive: false});
-  }
+  @property({type: Boolean, reflect: true}) dragging = false;
 
   get _r0() {
     return this.radius;
@@ -46,14 +38,18 @@ class RoundSlider extends LitElement {
     return Math.min(this.arcLength*Math.PI/180, 2*Math.PI-0.01);
   }
   get _end() {
-    return this._start+this._len;
+    return this._start + this._len;
+  }
+
+  get _isDisabled() {
+    return this.disabled || (!this.value && !this.high && !this.low);
   }
 
   _getBoundaries() {
     const margin = this.handleSize * 1.5;
 
     const angleInside = (angle) => {
-      let a = (this.startAngle + this.arcLength/2-angle+180+360) % 360 - 180;
+      let a = (this.startAngle + this.arcLength/2 - angle + 180 + 360) % 360 - 180;
       return (a < this.arcLength/2 && a > -this.arcLength/2);
     }
 
@@ -88,8 +84,8 @@ class RoundSlider extends LitElement {
 
     return {
       up, down, left, right,
-      width: left+right,
-      height: up+down,
+      width: left + right,
+      height: up + down,
     }
   }
 
@@ -102,6 +98,7 @@ class RoundSlider extends LitElement {
       const min = handle.id === "high" ? this.low : this.min;
       const max = handle.id === "low" ? this.high : this.max;
       this._rotation = { handle, min, max }
+      this.dragging = true;
     }
   }
 
@@ -116,6 +113,7 @@ class RoundSlider extends LitElement {
       });
       this._rotation = false;
       this.dispatchEvent(event);
+      this.dragging = false;
     }
   }
 
@@ -134,7 +132,7 @@ class RoundSlider extends LitElement {
 
     const angle = (Math.atan2(y,x) - this._start + 2*Math.PI) % (2*Math.PI);
 
-    const pos = Math.round((angle/this._len*(this.max-this.min)+this.min)/this.step)*this.step;
+    const pos = Math.round((angle/this._len*(this.max - this.min) + this.min)/this.step)*this.step;
     if(pos < this._rotation.min || pos > this._rotation.max) return;
 
     const handle = this._rotation.handle;
@@ -148,32 +146,32 @@ class RoundSlider extends LitElement {
     this.dispatchEvent(event);
   }
 
+  firstUpdated() {
+    document.addEventListener('mouseup', this.dragEnd.bind(this));
+    document.addEventListener('touchend', this.dragEnd.bind(this), {passive: false});
+    document.addEventListener('mousemove', this.drag.bind(this));
+    document.addEventListener('touchmove', this.drag.bind(this), {passive: false});
+  }
 
-  render() {
 
-    if(!this.value && !this.high && !this.low)
-      this.disabled = true;
-    var up, left, width, height;
-    ({up, left, width, height} = this._getBoundaries());
-
-    const arc = (start, end) => {
-      const r = this._rArc;
-      return `
+  _renderArc(start, end) {
+    const r = this._rArc;
+    return `
       M ${this._r0 + r*Math.cos(start)} ${this._r0 + r*Math.sin(start)}
       A ${r} ${r},
         0,
         ${(end-start) > Math.PI ? "1" : "0"} 1,
         ${this._r0+r*Math.cos(end)} ${this._r0+r*Math.sin(end)}
     `;
-    }
+  }
 
-    const valueFrac = (val) => {
-      return (this[val]-this.min)/(this.max-this.min);
-    }
+  _valueFrac(val) {
+    return (this[val]-this.min)/(this.max-this.min);
+  }
 
-    const handle = (id) => {
-      const theta = this._start + valueFrac(id)*this._len;
-      return svg`
+  _renderHandle(id) {
+    const theta = this._start + this._valueFrac(id)*this._len;
+    return svg`
         <circle
           id=${id}
           class="handle ${id} overflow"
@@ -190,13 +188,16 @@ class RoundSlider extends LitElement {
           r=${this.handleSize}
         ></circle>
       `
-    };
+  };
+
+  render() {
+    let up, left, width, height;
+    ({up, left, width, height} = this._getBoundaries());
 
     return html`
     <div
       @mousedown=${this.dragStart}
       @touchstart=${this.dragStart}
-      class="round-slider"
       style="
          height: ${height}px;
          width: ${width}px;
@@ -204,41 +205,41 @@ class RoundSlider extends LitElement {
     >
       <svg
         xmln="http://www.w3.org/2000/svg"
-        viewBox="${this._r0-left} ${this._r0-up} ${width} ${height}"
+        viewBox="${this._r0 - left} ${this._r0 - up} ${width} ${height}"
       >
         <g class="slider">
           <path
             class="path"
-            d=${arc(this._start, this._end)}
+            d=${this._renderArc(this._start, this._end)}
           />
-          ${ this.disabled
+          ${ this._isDisabled
             ? ''
             : svg`
           <path
             class="bar"
-            d=${arc(
+            d=${this._renderArc(
               this._start+this._len*(this.low !== undefined
-                ? valueFrac("low")
+                ? this._valueFrac("low")
                 : 0
               ),
               this._start+this._len*((this.high !== undefined)
-                ? valueFrac("high")
-                : valueFrac("value")
+                ? this._valueFrac("high")
+                : this._valueFrac("value")
               )
             )}
           />
           `}
         </g>
 
-        ${ this.disabled
+        ${ this._isDisabled
           ? ''
           : svg`
           <g class="handles">
           ${ this.low !== undefined
             ? this.low >= (0.99*this.max)
-              ? html`${handle("high")} ${handle("low")}`
-              : html`${handle("low")} ${handle("high")}`
-            : html`${handle("value")}`
+              ? html`${this._renderHandle("high")} ${this._renderHandle("low")}`
+              : html`${this._renderHandle("low")} ${this._renderHandle("high")}`
+            : html`${this._renderHandle("value")}`
           }
           </g>
           `}
