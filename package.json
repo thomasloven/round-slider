@@ -22,5 +22,12 @@
   },
   "keywords": [],
   "author": "thomasloven",
-  "license": "MIT"
+  "license": "MIT",
+  "files": [
+    "round-slider.js"
+  ],
+  "repository": {
+    "url": "https://github.com/thomasloven/round-slider.git",
+    "type": "git"
+  }
 }

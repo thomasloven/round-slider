@@ -45,23 +45,24 @@ class RoundSlider extends LitElement {
     return this.disabled || (!this.value && !this.high && !this.low);
   }
 
+  _angleInside(angle) {
+    let a = (this.startAngle + this.arcLength/2 - angle + 180 + 360) % 360 - 180;
+    return (a < this.arcLength/2 && a > -this.arcLength/2);
+  }
+
   _getBoundaries() {
     const margin = this.handleSize * 1.5;
 
-    const angleInside = (angle) => {
-      let a = (this.startAngle + this.arcLength/2 - angle + 180 + 360) % 360 - 180;
-      return (a < this.arcLength/2 && a > -this.arcLength/2);
-    }
 
     let up = this._r0;
-    if(!angleInside(270))
+    if(!this._angleInside(270))
       up =  Math.max(
         -this._rArc*Math.sin(this._start) + margin,
         -this._rArc*Math.sin(this._end) + margin
       );
 
     let down = this._r0;
-    if(!angleInside(90))
+    if(!this._angleInside(90))
       down = Math.max(
         this._rArc*Math.sin(this._start) + margin,
         this._rArc*Math.sin(this._end) + margin
@@ -69,14 +70,14 @@ class RoundSlider extends LitElement {
     th
 
     let left = this._r0;
-    if(!angleInside(180))
+    if(!this._angleInside(180))
       left = Math.max(
         -this._rArc*Math.cos(this._start) + margin,
         -this._rArc*Math.cos(this._end) + margin
       );
 
     let right = this._r0;
-    if(!angleInside(0))
+    if(!this._angleInside(0))
       right = Math.max(
         this._rArc*Math.cos(this._start) + margin,
         this._rArc*Math.cos(this._end) + margin
@@ -90,36 +91,39 @@ class RoundSlider extends LitElement {
   }
 
   dragStart(ev) {
-    if(ev.target.classList.contains("handle")) {
-      let handle = ev.target;
-      if(handle.classList.contains("overflow"))
-        handle = handle.nextElementSibling
-      handle.setAttribute('r', this.handleSize*1.5);
-      const min = handle.id === "high" ? this.low : this.min;
-      const max = handle.id === "low" ? this.high : this.max;
-      this._rotation = { handle, min, max }
-      this.dragging = true;
-    }
+    if(!ev.target.classList.contains("handle")) return;
+
+    let handle = ev.target;
+    if(handle.classList.contains("overflow"))
+      handle = handle.nextElementSibling
+    handle.setAttribute('r', this.handleSize*1.5);
+
+    const min = handle.id === "high" ? this.low : this.min;
+    const max = handle.id === "low" ? this.high : this.max;
+    this._rotation = { handle, min, max }
+    this.dragging = true;
   }
 
   dragEnd(ev) {
-    if(this._rotation) {
-      const handle = this._rotation.handle;
-      handle.setAttribute('r', this.handleSize);
-      let event = new CustomEvent('value-changed', {
-        detail: {
-          [handle.id] : this[handle.id],
-        }
-      });
-      this._rotation = false;
-      this.dispatchEvent(event);
-      this.dragging = false;
+    if(!this._rotation) return;
 
-      if(this.low && this.low >= 0.99*this.max)
-        this._reverseOrder = true;
-      else
-        this._reverseOrder = false;
-    }
+    const handle = this._rotation.handle;
+    handle.setAttribute('r', this.handleSize);
+
+    this._rotation = false;
+    this.dragging = false;
+
+    let event = new CustomEvent('value-changed', {
+      detail: {
+        [handle.id] : this[handle.id],
+      }
+    });
+    this.dispatchEvent(event);
+
+    if(this.low && this.low >= 0.99*this.max)
+      this._reverseOrder = true;
+    else
+      this._reverseOrder = false;
   }
 
   drag(ev) {
