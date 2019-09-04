@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "",
   "main": "round-slider.js",
+  "module": "round-slider.es.js",
   "dependencies": {
     "lit-element": "^2.2.1"
   },
@@ -24,7 +25,8 @@
   "author": "thomasloven",
   "license": "MIT",
   "files": [
-    "round-slider.js"
+    "round-slider.js",
+    "round-slider.es.js"
   ],
   "repository": {
     "url": "https://github.com/thomasloven/round-slider.git",
