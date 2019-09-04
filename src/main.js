@@ -3,27 +3,39 @@ import {
   html,
   css,
   svg,
-  property,
 } from "lit-element";
 
 class RoundSlider extends LitElement {
 
-  @property({type: Number}) value;
-  @property({type: Number}) high;
-  @property({type: Number}) low;
+  static get properties() {
+    return {
+      value: {type: Number},
+      high: {type: Number},
+      low: {type: Number},
+      min: {type: Number},
+      max: {type: Number},
+      step: {type: Number},
+      radius: {type: Number},
+      startAngle: {type: Number},
+      arcLength: {type: Number},
+      handleSize: {type: Number},
+      disabled: {type: Boolean},
+      dragging: {type: Boolean, reflect: true},
+    }
+  }
 
-  @property({type: Number}) min = 0;
-  @property({type: Number}) max = 100;
-  @property({type: Number}) step = 1;
-
-  @property({type: Number}) radius = 80;
-  @property({type: Number}) startAngle = 135;
-  @property({type: Number}) arcLength = 270;
-
-  @property({type: Number}) handleSize = 6;
-  @property({type: Boolean}) disabled = false;
-
-  @property({type: Boolean, reflect: true}) dragging = false;
+  constructor() {
+    super();
+    this.min = 0;
+    this.max = 100;
+    this.step = 1;
+    this.radius = 80;
+    this.startAngle = 135;
+    this.arcLength = 270;
+    this.handleSize = 6;
+    this.disabled = false;
+    this.dragging = false;
+  }
 
   get _r0() {
     return this.radius;
