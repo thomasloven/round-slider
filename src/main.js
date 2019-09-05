@@ -54,7 +54,7 @@ class RoundSlider extends LitElement {
   }
 
   get _isDisabled() {
-    return this.disabled || (!this.value && !this.high && !this.low);
+    return this.disabled || (this.value === undefined && this.high === undefined && this.low === undefined);
   }
 
   _angleInside(angle) {
