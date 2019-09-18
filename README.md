@@ -1,6 +1,6 @@
 # round-slider
 
-A simple round slider webcomponent
+A simple round slider webcomponent - [interactive demo](https://rawcdn.githack.com/thomasloven/round-slider/master/example.html)
 
 ![single](https://user-images.githubusercontent.com/1299821/64284907-e48d9100-cf5a-11e9-99ed-07afbfb1eada.png)
 
