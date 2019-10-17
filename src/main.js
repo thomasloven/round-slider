@@ -29,7 +29,7 @@ class RoundSlider extends LitElement {
     this.min = 0;
     this.max = 100;
     this.step = 1;
-    this.radius = 80;
+    this.radius = undefined;
     this.startAngle = 135;
     this.arcLength = 270;
     this.handleSize = 6;
@@ -38,7 +38,25 @@ class RoundSlider extends LitElement {
   }
 
   get _r0() {
-    return this.radius;
+    if(!this.clientWidth)
+      return 80;
+
+    let left = 1;
+    if(!this._angleInside(180))
+      left = Math.max(
+        -Math.cos(this._start),
+        -Math.cos(this._end)
+      );
+    let right = 1;
+    if(!this._angleInside(0))
+      right = Math.max(
+        Math.cos(this._start),
+        Math.cos(this._end)
+      );
+
+    if (this.radius)
+      this.style.width = `${this.radius*(left+right)}px`;
+    return this.clientWidth/(left+right);
   }
   get _rArc() {
     return this._r0 - this.handleSize*1.5;
@@ -111,7 +129,7 @@ class RoundSlider extends LitElement {
 
     const min = handle.id === "high" ? this.low : this.min;
     const max = handle.id === "low" ? this.high : this.max;
-    this._rotation = { handle, min, max }
+    this._rotation = { handle, min, max };
     this.dragging = true;
   }
 
@@ -215,15 +233,9 @@ class RoundSlider extends LitElement {
     ({up, left, width, height} = this._getBoundaries());
 
     return html`
-    <div
+      <svg
       @mousedown=${this.dragStart}
       @touchstart=${this.dragStart}
-      style="
-         height: ${height}px;
-         width: ${width}px;
-       "
-    >
-      <svg
         xmln="http://www.w3.org/2000/svg"
         viewBox="${this._r0 - left} ${this._r0 - up} ${width} ${height}"
       >
@@ -264,14 +276,14 @@ class RoundSlider extends LitElement {
           </g>
           `}
       </svg>
-    </div>
     `;
   }
 
   static get styles() {
     return css`
-      div {
+      :host {
         display: inline-block;
+        width: 100%;
       }
       .slider {
         fill: none;

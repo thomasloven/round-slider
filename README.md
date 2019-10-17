@@ -1,6 +1,6 @@
 # round-slider
 
-A simple round slider webcomponent
+A simple round slider webcomponent - [demo](https://rawcdn.githack.com/thomasloven/round-slider/master/example.html)
 
 ![single](https://user-images.githubusercontent.com/1299821/64284907-e48d9100-cf5a-11e9-99ed-07afbfb1eada.png)
 
@@ -15,7 +15,6 @@ A simple round slider webcomponent
 - `max` - Higher limit of values
 - `step` - Step size of slider
 
-- `radius` - Outer radius of slider (including handle) in pixels (default: 80)
 - `startAngle` - Angle in degrees at which slider bar starts (default: 135)
 - `arcLength` - Length in degrees of slider bar (default: 270)
 
@@ -45,5 +44,5 @@ The following css variables can be used to change the styles:
 - `--round-slider-linecap` - svg linecaps of bar (default: `round`)
 
 ## Examples
-See [example.html](https://rawcdn.githack.com/thomasloven/round-slider/04aa9dfce1e4fa0c9813cf0cef5fb7b3dd5f8129/example.html) for usage examples.
+See [example.html](https://rawcdn.githack.com/thomasloven/round-slider/master/example.html) for usage examples.
 ![Examples](https://user-images.githubusercontent.com/1299821/64284861-c9bb1c80-cf5a-11e9-830f-11951f84596d.png)
