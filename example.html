@@ -2,12 +2,26 @@
   <head>
     <title>Round-slider demo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://unpkg.com/@thomasloven/round-slider"></script>
+    <!-- <script src="https://unpkg.com/@thomasloven/round-slider"></script> -->
+    <script src="/round-slider.js"></script>
   </head>
   <body style="margin-left: 24px">
-    <h1> Default </h1>
+    <style>
+      round-slider {
+        max-width: 200px;
+      }
+    </style>
+    <h1> Value: <span id="value">50</span></h1>
+    <h2> Default </h2>
     <round-slider
       value=50
+    ></round-slider>
+    <h2> Styling </h2>
+    <round-slider
+      value=50
+      style="
+        --round-slider-path-color: red;
+      "
     ></round-slider>
     <round-slider
       value=50
@@ -22,26 +36,28 @@
       "
     ></round-slider>
 
-    <h1> High/Low sliders </h1>
+    <h2> High/Low sliders (<span id="low">20</span>-<span id="high">70</span>)</h2>
     <round-slider
       low=20
       high=70
+      class="highlow"
     ></round-slider>
     <round-slider
-      low=50
-      high=90
+      low=20
+      high=70
       style="
         --round-slider-low-handle-color: red;
         --round-slider-high-handle-color: green;
       "
+      class="highlow"
     ></round-slider>
 
-    <h1> Disabled </h1>
+    <h2> Disabled </h2>
     <round-slider
       value=50
       disabled
     ></round-slider>
-    <h1> Start Angle </h1>
+    <h2> Start Angle </h2>
     <round-slider
       value=50
       startAngle=0
@@ -59,7 +75,7 @@
       startAngle=270
     ></round-slider>
 
-    <h1> Arc Length </h1>
+    <h2> Arc Length </h2>
     <round-slider
       value=50
       arcLength=90
@@ -76,25 +92,70 @@
       startAngle=180
     ></round-slider>
 
-    <h1> Listeners </h1>
+    <h2> Right-to-Left </h2>
     <round-slider
-      id="listen"
       value=50
+      rtl
     ></round-slider>
-    Value: <span id="value">50</span>
 
     <script>
-      document.querySelector("#listen").addEventListener('value-changed', function(ev) {
+      const setValue = function(value, active) {
+        document.querySelectorAll("round-slider").forEach(function(el) {
+          if(!el.value) return;
+          el.value = value;
+        });
         const span = document.querySelector("#value");
-        span.innerHTML = ev.detail.value;
-        span.style.color = 'black';
-      });
-      document.querySelector("#listen").addEventListener('value-changing', function(ev) {
-        const span = document.querySelector("#value");
-        span.innerHTML = ev.detail.value;
-        span.style.color = 'red';
+         span.innerHTML = value;
+        if(active)
+          span.style.color = 'red';
+        else
+          span.style.color = 'black';
+      }
+      const setLow = function(value, active) {
+        document.querySelectorAll("round-slider").forEach(function(el) {
+          if(!el.low) return;
+          el.low = value;
+        });
+        const span = document.querySelector("#low");
+         span.innerHTML = value;
+        if(active)
+          span.style.color = 'red';
+        else
+          span.style.color = 'black';
+      }
+      const setHigh = function(value, active) {
+        document.querySelectorAll("round-slider").forEach(function(el) {
+          if(!el.high) return;
+          el.high = value;
+        });
+        const span = document.querySelector("#high");
+         span.innerHTML = value;
+        if(active)
+          span.style.color = 'red';
+        else
+          span.style.color = 'black';
+      }
+
+
+      document.querySelectorAll("round-slider").forEach(function (el) {
+        el.addEventListener('value-changed', function(ev) {
+          if(ev.detail.value)
+            setValue(ev.detail.value, false);
+          else if(ev.detail.low)
+            setLow(ev.detail.low, false);
+          else if(ev.detail.high)
+            setHigh(ev.detail.high, false);
+        });
+
+        el.addEventListener('value-changing', function(ev) {
+          if(ev.detail.value)
+            setValue(ev.detail.value, true);
+          else if(ev.detail.low)
+            setLow(ev.detail.low, true);
+          else if(ev.detail.high)
+            setHigh(ev.detail.high, true);
+        });
       });
     </script>
-
   </body>
 </html>
