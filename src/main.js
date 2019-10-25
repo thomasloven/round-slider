@@ -15,7 +15,6 @@ class RoundSlider extends LitElement {
       min: {type: Number},
       max: {type: Number},
       step: {type: Number},
-      radius: {type: Number}, // Undocumented, not recommended
       startAngle: {type: Number},
       arcLength: {type: Number},
       handleSize: {type: Number},
@@ -31,7 +30,6 @@ class RoundSlider extends LitElement {
     this.min = 0;
     this.max = 100;
     this.step = 1;
-    this.radius = undefined;
     this.startAngle = 135;
     this.arcLength = 270;
     this.handleSize = 6;
@@ -41,36 +39,6 @@ class RoundSlider extends LitElement {
     this.rtl = false;
   }
 
-  get _r0() {
-    // The radius of the circle prescribed by the outermost edge of the handle
-    // Depends on the width of the element
-
-    if(!this.clientWidth)
-      return 80;
-
-    let left = 1;
-    if(!this._angleInside(180))
-      left = Math.max(
-        -Math.cos(this._start),
-        -Math.cos(this._end)
-      );
-    let right = 1;
-    if(!this._angleInside(0))
-      right = Math.max(
-        Math.cos(this._start),
-        Math.cos(this._end)
-      );
-
-    // Setting radius overrides everything.
-    // It's not recommended.
-    // Set the element width instead - that will look much better
-    if (this.radius)
-      this.style.width = `${this.radius*(left+right)}px`;
-    return this.clientWidth/(left+right);
-  }
-  get _rArc() {
-    return this._r0 - this.handleSize*this.handleZoom;
-  }
   get _start() {
     return this.startAngle*Math.PI/180;
   }
@@ -113,42 +81,42 @@ class RoundSlider extends LitElement {
 
 
   get _boundaries() {
-    // Get the left, right, top and bottom extremes of the arc
+    // Get the maximum extents of the bar arc
     const start = this._angle2xy(this._start);
     const end = this._angle2xy(this._end);
-    const margin = this.handleSize*this.handleZoom;
 
     let up = 1;
     if(!this._angleInside(270))
       up =  Math.max(-start.y, -end.y);
-    up = this._rArc*up + margin;
 
     let down = 1;
     if(!this._angleInside(90))
       down = Math.max(start.y, end.y);
-    down = this._rArc*down + margin;
 
     let left = 1;
     if(!this._angleInside(180))
       left = Math.max(-start.x, -end.x);
-    left = this._rArc*left + margin;
 
     let right = 1;
     if(!this._angleInside(0))
       right = Math.max(start.x, end.x);
-    right = this._rArc*right + margin;
 
-    return { up, down, left, right };
+    return {
+      up, down, left, right,
+      height: up+down,
+      width: left+right,
+    };
   }
 
   dragStart(ev) {
-    if(!ev.target.classList.contains("handle")) return;
-
     let handle = ev.target;
+
     // If an invisible handle was clicked, switch to the visible counterpart
     if(handle.classList.contains("overflow"))
       handle = handle.nextElementSibling
-    handle.setAttribute('r', this.handleSize*this.handleZoom);
+
+    if(!handle.classList.contains("handle")) return;
+    handle.setAttribute('stroke-width', 2*this.handleSize*this.handleZoom);
 
     const min = handle.id === "high" ? this.low : this.min;
     const max = handle.id === "low" ? this.high : this.max;
@@ -160,7 +128,7 @@ class RoundSlider extends LitElement {
     if(!this._rotation) return;
 
     const handle = this._rotation.handle;
-    handle.setAttribute('r', this.handleSize);
+    handle.setAttribute('stroke-width', 2*this.handleSize);
 
     this._rotation = false;
     this.dragging = false;
@@ -192,8 +160,8 @@ class RoundSlider extends LitElement {
 
     const rect = this.shadowRoot.querySelector("svg").getBoundingClientRect();
     const boundaries = this._boundaries;
-    const x = mouseX - (rect.x + boundaries.left);
-    const y = mouseY - (rect.y + boundaries.up);
+    const x = mouseX - (rect.x + boundaries.left*rect.width/boundaries.width);
+    const y = mouseY - (rect.y + boundaries.up*rect.height/boundaries.height);
 
     const angle = this._xy2angle(x,y);
     const pos = this._angle2value(angle);
@@ -215,19 +183,18 @@ class RoundSlider extends LitElement {
     document.addEventListener('touchend', this.dragEnd.bind(this), {passive: false});
     document.addEventListener('mousemove', this.drag.bind(this));
     document.addEventListener('touchmove', this.drag.bind(this), {passive: false});
-    this.addEventListener('resize', () => console.log("Resize"));
   }
 
-  _renderArc(start, end, r=1) {
+  _renderArc(start, end) {
     const diff = end-start;
     start = this._angle2xy(start);
     end = this._angle2xy(end);
     return `
-      M ${r*start.x} ${r*start.y}
-      A ${r} ${r},
+      M ${start.x} ${start.y}
+      A 1 1,
         0,
         ${(diff) > Math.PI ? "1" : "0"} ${this.rtl ? "0" : "1"},
-        ${r*end.x} ${r*end.y}
+        ${end.x} ${end.y}
     `;
   }
 
@@ -238,21 +205,29 @@ class RoundSlider extends LitElement {
     // Two handles are drawn. One visible, and one invisible that's twice as
     // big. Makes it easier to click.
     return svg`
-        <circle
+      <g class="${id} handle">
+        <path
           id=${id}
-          class="handle ${id} overflow"
-          cx=${this._rArc*pos.x}
-          cy=${this._rArc*pos.y}
-          r=${2*this.handleSize}
-          style="fill: rgba(0,0,0,0);"
-        ></circle>
-        <circle
+          class="overflow"
+          d="
+          M ${pos.x} ${pos.y}
+          L ${pos.x+0.001} ${pos.y+0.001}
+          "
+          vector-effect="non-scaling-stroke"
+          stroke="rgba(0,0,0,0)"
+          stroke-width="${4*this.handleSize}"
+          />
+        <path
           id=${id}
-          class="handle ${id}"
-          cx=${this._rArc*pos.x}
-          cy=${this._rArc*pos.y}
-          r=${this.handleSize}
-        ></circle>
+          class="handle"
+          d="
+          M ${pos.x} ${pos.y}
+          L ${pos.x+0.001} ${pos.y+0.001}
+          "
+          vector-effect="non-scaling-stroke"
+          stroke-width="${2*this.handleSize}"
+          />
+        </g>
       `
   };
 
@@ -264,38 +239,39 @@ class RoundSlider extends LitElement {
       @mousedown=${this.dragStart}
       @touchstart=${this.dragStart}
         xmln="http://www.w3.org/2000/svg"
-        viewBox="${-view.left} ${-view.up} ${view.left + view.right} ${view.up + view.down}"
+        viewBox="${-view.left} ${-view.up} ${view.width} ${view.height}"
+        style="margin: ${this.handleSize*this.handleZoom};"
       >
         <g class="slider">
           <path
             class="path"
-            d=${this._renderArc(this._start, this._end, this._rArc)}
+            d=${this._renderArc(this._start, this._end)}
+            vector-effect="non-scaling-stroke"
           />
           ${ this._enabled
             ? svg`
               <path
                 class="bar"
+                vector-effect="non-scaling-stroke"
                 d=${this._renderArc(
                   this._value2angle(this.low !== undefined ? this.low : this.min),
-                  this._value2angle(this.high !== undefined ? this.high : this.value),
-                  this._rArc)}
+                  this._value2angle(this.high !== undefined ? this.high : this.value)
+                )}
               />`
             : ``
           }
         </g>
 
+        <g class="handles">
         ${ this._enabled
-          ? svg`
-            <g class="handles">
-            ${ this.low !== undefined
-                ? this._reverseOrder
+          ? this.low !== undefined
+              ? this._reverseOrder
                 ? html`${this._renderHandle("high")} ${this._renderHandle("low")}`
                 : html`${this._renderHandle("low")} ${this._renderHandle("high")}`
-                : html`${this._renderHandle("value")}`
-            }
-            </g>`
+              : html`${this._renderHandle("value")}`
           : ``
         }
+        </g>
       </svg>
     `;
   }
@@ -305,6 +281,9 @@ class RoundSlider extends LitElement {
       :host {
         display: inline-block;
         width: 100%;
+      }
+      svg {
+        overflow: visible;
       }
       .slider {
         fill: none;
@@ -317,18 +296,18 @@ class RoundSlider extends LitElement {
       .bar {
         stroke: var(--round-slider-bar-color, deepskyblue);
       }
-      .handles {
-        fill: var(--round-slider-handle-color, var(--round-slider-bar-color, deepskyblue));
+      g.handles {
+        stroke: var(--round-slider-handle-color, var(--round-slider-bar-color, deepskyblue));
+        stroke-linecap: round;
       }
-      .handles .low {
-        fill: var(--round-slider-low-handle-color);
+      g.low.handle {
+        stroke: var(--round-slider-low-handle-color);
       }
-      .handles .high {
-        fill: var(--round-slider-high-handle-color);
+      g.high.handle {
+        stroke: var(--round-slider-high-handle-color);
       }
     `;
   }
 
 }
-
 customElements.define('round-slider', RoundSlider);

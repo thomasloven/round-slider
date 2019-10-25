@@ -1,13 +1,19 @@
+<!DOCTYPE html>
 <html>
   <head>
     <title>Round-slider demo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://unpkg.com/@thomasloven/round-slider"></script>
+    <script src="https://unpkg.com/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+    <script src="https://unpkg.com/@thomasloven/round-slider" type="module"></script>
   </head>
   <body style="margin-left: 24px">
     <style>
       round-slider {
         max-width: 200px;
+        transition: all 1.3s ease-out 0s;
+      }
+      round-slider.scaling:hover {
+        max-width: 400px;
       }
     </style>
     <h1> Value: <span id="value">50</span></h1>
@@ -89,6 +95,12 @@
       value=50
       arcLength=360
       startAngle=180
+    ></round-slider>
+
+    <h2> Dynamic scaling </h2>
+    <round-slider
+      value=50
+      class="scaling"
     ></round-slider>
 
     <h2> Right-to-Left </h2>
