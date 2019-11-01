@@ -111,6 +111,9 @@ class RoundSlider extends LitElement {
   dragStart(ev) {
     let handle = ev.target;
 
+    // Avoid double events mouseDown->focus
+    if(this._rotation && this._rotation.type !== "focus") return;
+
     // If an invisible handle was clicked, switch to the visible counterpart
     if(handle.classList.contains("overflow"))
       handle = handle.nextElementSibling
@@ -120,7 +123,7 @@ class RoundSlider extends LitElement {
 
     const min = handle.id === "high" ? this.low : this.min;
     const max = handle.id === "low" ? this.high : this.max;
-    this._rotation = { handle, min, max };
+    this._rotation = { handle, min, max, start: this[handle.id], type: ev.type};
     this.dragging = true;
   }
 
@@ -132,6 +135,8 @@ class RoundSlider extends LitElement {
 
     this._rotation = false;
     this.dragging = false;
+
+    handle.blur();
 
     let event = new CustomEvent('value-changed', {
       detail: {
@@ -152,6 +157,7 @@ class RoundSlider extends LitElement {
 
   drag(ev) {
     if(!this._rotation) return;
+    if(this._rotation.type === "focus") return;
 
     ev.preventDefault();
 
@@ -165,6 +171,10 @@ class RoundSlider extends LitElement {
 
     const angle = this._xy2angle(x,y);
     const pos = this._angle2value(angle);
+    this._dragpos(pos);
+  }
+
+  _dragpos(pos) {
     if(pos < this._rotation.min || pos > this._rotation.max) return;
 
     const handle = this._rotation.handle;
@@ -178,11 +188,27 @@ class RoundSlider extends LitElement {
     this.dispatchEvent(event);
   }
 
+  _keyStep(ev) {
+    if(!this._rotation) return;
+    const handle = this._rotation.handle;
+    if(ev.key === "ArrowLeft")
+      if(this.rtl)
+        this._dragpos(this[handle.id] + this.step);
+      else
+        this._dragpos(this[handle.id] - this.step);
+    if(ev.key === "ArrowRight")
+      if(this.rtl)
+        this._dragpos(this[handle.id] - this.step);
+      else
+        this._dragpos(this[handle.id] + this.step);
+  }
+
   firstUpdated() {
     document.addEventListener('mouseup', this.dragEnd.bind(this));
     document.addEventListener('touchend', this.dragEnd.bind(this), {passive: false});
     document.addEventListener('mousemove', this.drag.bind(this));
     document.addEventListener('touchmove', this.drag.bind(this), {passive: false});
+    document.addEventListener('keydown', this._keyStep.bind(this));
   }
 
   _renderArc(start, end) {
@@ -226,6 +252,9 @@ class RoundSlider extends LitElement {
           "
           vector-effect="non-scaling-stroke"
           stroke-width="${2*this.handleSize}"
+          tabindex="0"
+          @focus=${this.dragStart}
+          @blur=${this.dragEnd}
           />
         </g>
       `
@@ -236,11 +265,12 @@ class RoundSlider extends LitElement {
 
     return html`
       <svg
-      @mousedown=${this.dragStart}
-      @touchstart=${this.dragStart}
+        @mousedown=${this.dragStart}
+        @touchstart=${this.dragStart}
         xmln="http://www.w3.org/2000/svg"
         viewBox="${-view.left} ${-view.up} ${view.width} ${view.height}"
         style="margin: ${this.handleSize*this.handleZoom};"
+        focusable="false"
       >
         <g class="slider">
           <path
@@ -305,6 +335,9 @@ class RoundSlider extends LitElement {
       }
       g.high.handle {
         stroke: var(--round-slider-high-handle-color);
+      }
+      .handle:focus {
+        outline: unset;
       }
     `;
   }
