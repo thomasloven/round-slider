@@ -269,7 +269,7 @@ class RoundSlider extends LitElement {
         @touchstart=${this.dragStart}
         xmln="http://www.w3.org/2000/svg"
         viewBox="${-view.left} ${-view.up} ${view.width} ${view.height}"
-        style="margin: ${this.handleSize*this.handleZoom};"
+        style="margin: ${this.handleSize*this.handleZoom}px;"
         focusable="false"
       >
         <g class="slider">
