@@ -52,7 +52,13 @@ class RoundSlider extends LitElement {
 
   get _enabled() {
     // If handle is disabled
-    return !(this.disabled || (this.value === undefined && this.high === undefined && this.low === undefined));
+    if(this.disabled) return false;
+    if(this.value == null && (this.high == null || this.low == null)) return false;
+
+    if(this.value > this.max || this.value < this.min) return false;
+    if(this.high > this.max || this.high < this.min) return false;
+    if(this.low > this.max || this.low < this.min) return false;
+    return true;
   }
 
   _angleInside(angle) {
@@ -284,8 +290,8 @@ class RoundSlider extends LitElement {
                 class="bar"
                 vector-effect="non-scaling-stroke"
                 d=${this._renderArc(
-                  this._value2angle(this.low !== undefined ? this.low : this.min),
-                  this._value2angle(this.high !== undefined ? this.high : this.value)
+                  this._value2angle(this.low != null ? this.low : this.min),
+                  this._value2angle(this.high != null ? this.high : this.value)
                 )}
               />`
             : ``
@@ -294,7 +300,7 @@ class RoundSlider extends LitElement {
 
         <g class="handles">
         ${ this._enabled
-          ? this.low !== undefined
+          ? this.low != null
               ? this._reverseOrder
                 ? html`${this._renderHandle("high")} ${this._renderHandle("low")}`
                 : html`${this._renderHandle("low")} ${this._renderHandle("high")}`
