@@ -55,9 +55,9 @@ class RoundSlider extends LitElement {
     if(this.disabled) return false;
     if(this.value == null && (this.high == null || this.low == null)) return false;
 
-    if(this.value > this.max || this.value < this.min) return false;
-    if(this.high > this.max || this.high < this.min) return false;
-    if(this.low > this.max || this.low < this.min) return false;
+    if(this.value != null && (this.value > this.max || this.value < this.min)) return false;
+    if(this.high != null && (this.high > this.max || this.high < this.min)) return false;
+    if(this.low != null && (this.low > this.max || this.low < this.min)) return false;
     return true;
   }
 
