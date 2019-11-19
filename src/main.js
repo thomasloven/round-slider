@@ -22,6 +22,7 @@ class RoundSlider extends LitElement {
       disabled: {type: Boolean},
       dragging: {type: Boolean, reflect: true},
       rtl: {type: Boolean},
+      _scale: {type: Number},
     }
   }
 
@@ -37,6 +38,7 @@ class RoundSlider extends LitElement {
     this.disabled = false;
     this.dragging = false;
     this.rtl = false;
+    this._scale = 1;
   }
 
   get _start() {
@@ -125,7 +127,7 @@ class RoundSlider extends LitElement {
       handle = handle.nextElementSibling
 
     if(!handle.classList.contains("handle")) return;
-    handle.setAttribute('stroke-width', 2*this.handleSize*this.handleZoom);
+    handle.setAttribute('stroke-width', 2*this.handleSize*this.handleZoom*this._scale);
 
     const min = handle.id === "high" ? this.low : this.min;
     const max = handle.id === "low" ? this.high : this.max;
@@ -137,7 +139,7 @@ class RoundSlider extends LitElement {
     if(!this._rotation) return;
 
     const handle = this._rotation.handle;
-    handle.setAttribute('stroke-width', 2*this.handleSize);
+    handle.setAttribute('stroke-width', 2*this.handleSize*this._scale);
 
     this._rotation = false;
     this.dragging = false;
@@ -172,8 +174,8 @@ class RoundSlider extends LitElement {
 
     const rect = this.shadowRoot.querySelector("svg").getBoundingClientRect();
     const boundaries = this._boundaries;
-    const x = mouseX - (rect.x + boundaries.left*rect.width/boundaries.width);
-    const y = mouseY - (rect.y + boundaries.up*rect.height/boundaries.height);
+    const x = mouseX - (rect.left + boundaries.left*rect.width/boundaries.width);
+    const y = mouseY - (rect.top + boundaries.up*rect.height/boundaries.height);
 
     const angle = this._xy2angle(x,y);
     const pos = this._angle2value(angle);
@@ -217,6 +219,27 @@ class RoundSlider extends LitElement {
     document.addEventListener('keydown', this._keyStep.bind(this));
   }
 
+  updated(changedProperties) {
+
+    // Workaround for vector-effect not working in IE and pre-Chromium Edge
+    // That's also why the _scale property exists
+    if(this.shadowRoot.querySelector("svg")
+    && this.shadowRoot.querySelector("svg").style.vectorEffect !== undefined)
+      return;
+    if(changedProperties.has("_scale") && this._scale != 1) {
+      this.shadowRoot.querySelector("svg").querySelectorAll("path").forEach((e) => {
+        if(e.getAttribute('stroke-width')) return;
+        const orig = parseFloat(getComputedStyle(e).getPropertyValue('stroke-width'));
+        e.style.strokeWidth = `${orig*this._scale}px`;
+      });
+    }
+    const rect = this.shadowRoot.querySelector("svg").getBoundingClientRect();
+    const scale = Math.max(rect.width, rect.height);
+    this._scale = 2/scale;
+  }
+
+
+
   _renderArc(start, end) {
     const diff = end-start;
     start = this._angle2xy(start);
@@ -247,7 +270,7 @@ class RoundSlider extends LitElement {
           "
           vector-effect="non-scaling-stroke"
           stroke="rgba(0,0,0,0)"
-          stroke-width="${4*this.handleSize}"
+          stroke-width="${4*this.handleSize*this._scale}"
           />
         <path
           id=${id}
@@ -257,7 +280,7 @@ class RoundSlider extends LitElement {
           L ${pos.x+0.001} ${pos.y+0.001}
           "
           vector-effect="non-scaling-stroke"
-          stroke-width="${2*this.handleSize}"
+          stroke-width="${2*this.handleSize*this._scale}"
           tabindex="0"
           @focus=${this.dragStart}
           @blur=${this.dragEnd}
