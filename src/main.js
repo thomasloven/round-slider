@@ -243,7 +243,7 @@ class RoundSlider extends LitElement {
   _renderArc(start, end) {
     const diff = end-start;
     start = this._angle2xy(start);
-    end = this._angle2xy(end);
+    end = this._angle2xy(end+0.001); // Safari doesn't like arcs with no length
     return `
       M ${start.x} ${start.y}
       A 1 1,

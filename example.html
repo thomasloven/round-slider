@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://unpkg.com/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
     <script src="https://unpkg.com/@thomasloven/round-slider" type="module"></script>
+    <!--<script src="round-slider.js" type="module"></script>-->
   </head>
   <body style="margin-left: 24px">
     <style>
@@ -150,20 +151,20 @@
 
       document.querySelectorAll("round-slider").forEach(function (el) {
         el.addEventListener('value-changed', function(ev) {
-          if(ev.detail.value)
+          if(ev.detail.value !== undefined)
             setValue(ev.detail.value, false);
-          else if(ev.detail.low)
+          else if(ev.detail.low !== undefined)
             setLow(ev.detail.low, false);
-          else if(ev.detail.high)
+          else if(ev.detail.high !== undefined)
             setHigh(ev.detail.high, false);
         });
 
         el.addEventListener('value-changing', function(ev) {
-          if(ev.detail.value)
+          if(ev.detail.value !== undefined)
             setValue(ev.detail.value, true);
-          else if(ev.detail.low)
+          else if(ev.detail.low !== undefined)
             setLow(ev.detail.low, true);
-          else if(ev.detail.high)
+          else if(ev.detail.high !== undefined)
             setHigh(ev.detail.high, true);
         });
       });
