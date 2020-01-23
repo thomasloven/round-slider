@@ -21,7 +21,6 @@ class RoundSlider extends LitElement {
       handleZoom: {type: Number},
       disabled: {type: Boolean},
       dragging: {type: Boolean, reflect: true},
-      clickableArea: {type: Number},
       rtl: {type: Boolean},
       _scale: {type: Number},
     }
@@ -39,7 +38,6 @@ class RoundSlider extends LitElement {
     this.disabled = false;
     this.dragging = false;
     this.rtl = false;
-    this.clickableArea = 30;
     this._scale = 1;
   }
 
@@ -75,8 +73,8 @@ class RoundSlider extends LitElement {
 
   _angle2xy(angle) {
     if (this.rtl)
-      return {x: -Math.cos(angle), y: Math.sin(angle)}
-    return {x: Math.cos(angle), y: Math.sin(angle)}
+      return {x: -Math.cos(angle), y: Math.sin(angle)};
+    return {x: Math.cos(angle), y: Math.sin(angle)};
   }
 
   _xy2angle(x, y) {
@@ -260,12 +258,12 @@ class RoundSlider extends LitElement {
   }
 
   updated(changedProperties) {
-
     // Workaround for vector-effect not working in IE and pre-Chromium Edge
     // That's also why the _scale property exists
     if (this.shadowRoot.querySelector("svg")
         && this.shadowRoot.querySelector("svg").style.vectorEffect !== undefined)
       return;
+
     if (changedProperties.has("_scale") && this._scale != 1) {
       this.shadowRoot.querySelector("svg").querySelectorAll("path").forEach((e) => {
         if (e.getAttribute('stroke-width')) return;
@@ -362,7 +360,6 @@ class RoundSlider extends LitElement {
             class="shadow-path"
             d=${this._renderArc(this._start, this._end)}
             vector-effect="non-scaling-stroke"
-            stroke-width=${this.clickableArea}
            />
            
         </g>
@@ -398,7 +395,8 @@ class RoundSlider extends LitElement {
       .shadow-path {
         cursor: pointer;
         opacity: 0;
-        stroke: white;
+        stroke: red;
+        stroke-width: var(--round-slider-click-area, 30);
       }
       .path {
         stroke: var(--round-slider-path-color, lightgray);
