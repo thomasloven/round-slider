@@ -42,16 +42,16 @@ class RoundSlider extends LitElement {
   }
 
   get _start() {
-    return this.startAngle*Math.PI/180;
+    return this.startAngle * Math.PI / 180;
   }
 
   get _len() {
     // Things get weird if length is more than a complete turn
-    return Math.min(this.arcLength*Math.PI/180, 2*Math.PI-0.01);
+    return Math.min(this.arcLength * Math.PI / 180, 2 * Math.PI - 0.01);
   }
 
   get _end() {
-    return this._start+this._len;
+    return this._start + this._len;
   }
 
   get _enabled() {
@@ -59,37 +59,37 @@ class RoundSlider extends LitElement {
     if(this.disabled) return false;
     if(this.value == null && (this.high == null || this.low == null)) return false;
 
-    if(this.value != null && (this.value>this.max || this.value<this.min)) return false;
-    if(this.high != null && (this.high>this.max || this.high<this.min)) return false;
-    if(this.low != null && (this.low>this.max || this.low<this.min)) return false;
+    if(this.value != null && (this.value > this.max || this.value < this.min)) return false;
+    if(this.high != null && (this.high > this.max || this.high < this.min)) return false;
+    if(this.low != null && (this.low > this.max || this.low < this.min)) return false;
     return true;
   }
 
   _angleInside(angle) {
     // Check if an angle is on the arc
-    let a = (this.startAngle+this.arcLength/2-angle+180+360)%360-180;
-    return (a<this.arcLength/2 && a> -this.arcLength/2);
+    let a = (this.startAngle + this.arcLength / 2 - angle + 180 + 360) % 360 - 180;
+    return (a < this.arcLength / 2 && a > - this.arcLength / 2);
   }
 
   _angle2xy(angle) {
     if(this.rtl)
-      return {x: -Math.cos(angle), y: Math.sin(angle)};
+      return {x: - Math.cos(angle), y: Math.sin(angle)};
     return {x: Math.cos(angle), y: Math.sin(angle)};
   }
 
   _xy2angle(x, y) {
     if(this.rtl)
-      x = -x;
-    return (Math.atan2(y, x)-this._start+2*Math.PI)%(2*Math.PI);
+      x = - x;
+    return (Math.atan2(y, x) - this._start + 2 * Math.PI) % (2 * Math.PI);
   }
 
   _value2angle(value) {
-    const fraction = (value-this.min)/(this.max-this.min);
-    return this._start+fraction*this._len;
+    const fraction = (value - this.min) / (this.max - this.min);
+    return this._start + fraction * this._len;
   }
 
   _angle2value(angle) {
-    return Math.round((angle/this._len*(this.max-this.min)+this.min)/this.step)*this.step;
+    return Math.round((angle / this._len * (this.max - this.min) + this.min) / this.step) * this.step;
   }
 
   _mouse2value(ev) {
@@ -98,8 +98,8 @@ class RoundSlider extends LitElement {
 
     const rect = this.shadowRoot.querySelector("svg").getBoundingClientRect();
     const boundaries = this._boundaries;
-    const x = mouseX-(rect.left+boundaries.left*rect.width/boundaries.width);
-    const y = mouseY-(rect.top+boundaries.up*rect.height/boundaries.height);
+    const x = mouseX - (rect.left + boundaries.left * rect.width / boundaries.width);
+    const y = mouseY - (rect.top + boundaries.up * rect.height / boundaries.height);
 
     const angle = this._xy2angle(x, y);
     return this._angle2value(angle);
@@ -111,25 +111,25 @@ class RoundSlider extends LitElement {
     const end = this._angle2xy(this._end);
 
     let up = 1;
-    if(!this._angleInside(270))
-      up = Math.max(-start.y, -end.y);
+    if(! this._angleInside(270))
+      up = Math.max(- start.y, - end.y);
 
     let down = 1;
-    if(!this._angleInside(90))
+    if(! this._angleInside(90))
       down = Math.max(start.y, end.y);
 
     let left = 1;
-    if(!this._angleInside(180))
-      left = Math.max(-start.x, -end.x);
+    if(! this._angleInside(180))
+      left = Math.max(- start.x, - end.x);
 
     let right = 1;
-    if(!this._angleInside(0))
+    if(! this._angleInside(0))
       right = Math.max(start.x, end.x);
 
     return {
       up, down, left, right,
-      height: up+down,
-      width: left+right,
+      height: up + down,
+      width: left + right,
     };
   }
 
@@ -145,14 +145,14 @@ class RoundSlider extends LitElement {
 
       // Oddities with large shadow-path, mouse value ends up above 130 when
       // clicked in whitespace before start and over 100 after the end.
-      if(pos>=130)
+      if(pos >= 130)
         pos = 0;
 
-      if(pos>100)
+      if(pos > 100)
         pos = 100;
 
       if(this.low != null) {
-        if(pos>=(this["high"]-this["low"])/2+this["low"]) {
+        if(pos >= (this["high"] - this["low"]) / 2 + this["low"]) {
           handle = this.shadowRoot.getElementById("high");
         } else {
           handle = this.shadowRoot.getElementById("low");
@@ -168,8 +168,8 @@ class RoundSlider extends LitElement {
     if(handle.classList.contains("overflow"))
       handle = handle.nextElementSibling;
 
-    if(!handle.classList.contains("handle")) return;
-    handle.setAttribute('stroke-width', 2*this.handleSize*this.handleZoom*this._scale);
+    if(! handle.classList.contains("handle")) return;
+    handle.setAttribute('stroke-width', 2 * this.handleSize * this.handleZoom * this._scale);
 
     const min = handle.id === "high" ? this.low : this.min;
     const max = handle.id === "low" ? this.high : this.max;
@@ -178,10 +178,10 @@ class RoundSlider extends LitElement {
   }
 
   dragEnd(ev) {
-    if(!this._rotation) return;
+    if(! this._rotation) return;
 
     const handle = this._rotation.handle;
-    handle.setAttribute('stroke-width', 2*this.handleSize*this._scale);
+    handle.setAttribute('stroke-width', 2 * this.handleSize * this._scale);
 
     this._rotation = false;
     this.dragging = false;
@@ -199,14 +199,14 @@ class RoundSlider extends LitElement {
     // close to the top end.  Otherwise if would be unclickable, and the high
     // handle locked by the low.  Calcualtion is done in the dragEnd handler to
     // avoid "z fighting" while dragging.
-    if(this.low && this.low>=0.99*this.max)
+    if(this.low && this.low >= 0.99 * this.max)
       this._reverseOrder = true;
     else
       this._reverseOrder = false;
   }
 
   drag(ev) {
-    if(!this._rotation) return;
+    if(! this._rotation) return;
     if(this._rotation.type === "focus") return;
 
     ev.preventDefault();
@@ -216,7 +216,7 @@ class RoundSlider extends LitElement {
   }
 
   _dragpos(pos) {
-    if(pos<this._rotation.min || pos>this._rotation.max) return;
+    if(pos < this._rotation.min || pos > this._rotation.max) return;
 
     const handle = this._rotation.handle;
     this.moveHandle(handle, pos);
@@ -235,18 +235,18 @@ class RoundSlider extends LitElement {
   }
 
   _keyStep(ev) {
-    if(!this._rotation) return;
+    if(! this._rotation) return;
     const handle = this._rotation.handle;
     if(ev.key === "ArrowLeft")
       if(this.rtl)
-        this._dragpos(this[handle.id]+this.step);
+        this._dragpos(this[handle.id] + this.step);
       else
-        this._dragpos(this[handle.id]-this.step);
+        this._dragpos(this[handle.id] - this.step);
     if(ev.key === "ArrowRight")
       if(this.rtl)
-        this._dragpos(this[handle.id]-this.step);
+        this._dragpos(this[handle.id] - this.step);
       else
-        this._dragpos(this[handle.id]+this.step);
+        this._dragpos(this[handle.id] + this.step);
   }
 
   firstUpdated() {
@@ -265,26 +265,26 @@ class RoundSlider extends LitElement {
       return;
 
     if(changedProperties.has("_scale") && this._scale != 1) {
-      this.shadowRoot.querySelector("svg").querySelectorAll("path").forEach((e)=>{
+      this.shadowRoot.querySelector("svg").querySelectorAll("path").forEach((e) => {
         if(e.getAttribute('stroke-width')) return;
         const orig = parseFloat(getComputedStyle(e).getPropertyValue('stroke-width'));
-        e.style.strokeWidth = `${orig*this._scale}px`;
+        e.style.strokeWidth = `${orig * this._scale}px`;
       });
     }
     const rect = this.shadowRoot.querySelector("svg").getBoundingClientRect();
     const scale = Math.max(rect.width, rect.height);
-    this._scale = 2/scale;
+    this._scale = 2 / scale;
   }
 
   _renderArc(start, end) {
-    const diff = end-start;
+    const diff = end - start;
     start = this._angle2xy(start);
-    end = this._angle2xy(end+0.001); // Safari doesn't like arcs with no length
+    end = this._angle2xy(end + 0.001); // Safari doesn't like arcs with no length
     return `
       M ${start.x} ${start.y}
       A 1 1,
         0,
-        ${(diff)>Math.PI ? "1" : "0"} ${this.rtl ? "0" : "1"},
+        ${(diff) > Math.PI ? "1" : "0"} ${this.rtl ? "0" : "1"},
         ${end.x} ${end.y}
     `;
   }
@@ -302,21 +302,21 @@ class RoundSlider extends LitElement {
           class="overflow"
           d="
           M ${pos.x} ${pos.y}
-          L ${pos.x+0.001} ${pos.y+0.001}
+          L ${pos.x + 0.001} ${pos.y + 0.001}
           "
           vector-effect="non-scaling-stroke"
           stroke="rgba(0,0,0,0)"
-          stroke-width="${4*this.handleSize*this._scale}"
+          stroke-width="${4 * this.handleSize * this._scale}"
           />
         <path
           id=${id}
           class="handle"
           d="
           M ${pos.x} ${pos.y}
-          L ${pos.x+0.001} ${pos.y+0.001}
+          L ${pos.x + 0.001} ${pos.y + 0.001}
           "
           vector-effect="non-scaling-stroke"
-          stroke-width="${2*this.handleSize*this._scale}"
+          stroke-width="${2 * this.handleSize * this._scale}"
           tabindex="0"
           @focus=${this.dragStart}
           @blur=${this.dragEnd}
@@ -333,8 +333,8 @@ class RoundSlider extends LitElement {
         @mousedown=${this.dragStart}
         @touchstart=${this.dragStart}
         xmln="http://www.w3.org/2000/svg"
-        viewBox="${-view.left} ${-view.up} ${view.width} ${view.height}"
-        style="margin: ${this.handleSize*this.handleZoom}px;"
+        viewBox="${- view.left} ${- view.up} ${view.width} ${view.height}"
+        style="margin: ${this.handleSize * this.handleZoom}px;"
         focusable="false"
       >
         <g class="slider">
