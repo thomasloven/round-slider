@@ -19,6 +19,8 @@ class RoundSlider extends LitElement {
       arcLength: {type: Number},
       handleSize: {type: Number},
       handleZoom: {type: Number},
+      handleDisabled: {type: Boolean},
+      readonly: {type: Boolean},
       disabled: {type: Boolean},
       dragging: {type: Boolean, reflect: true},
       rtl: {type: Boolean},
@@ -35,6 +37,8 @@ class RoundSlider extends LitElement {
     this.arcLength = 270;
     this.handleSize = 6;
     this.handleZoom = 1.5;
+    this.handleDisabled = false;
+    this.readonly = false;
     this.disabled = false;
     this.dragging = false;
     this.rtl = false;
@@ -212,6 +216,10 @@ class RoundSlider extends LitElement {
   }
 
   firstUpdated() {
+    if(this.readonly || this.handleDisabled) {
+      return;
+    }
+
     document.addEventListener('mouseup', this.dragEnd.bind(this));
     document.addEventListener('touchend', this.dragEnd.bind(this), {passive: false});
     document.addEventListener('mousemove', this.drag.bind(this));
@@ -322,7 +330,7 @@ class RoundSlider extends LitElement {
         </g>
 
         <g class="handles">
-        ${ this._enabled
+        ${ this._enabled && !this.handleDisabled
           ? this.low != null
               ? this._reverseOrder
                 ? html`${this._renderHandle("high")} ${this._renderHandle("low")}`
