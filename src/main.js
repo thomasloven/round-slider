@@ -380,7 +380,7 @@ class RoundSlider extends LitElement {
         stroke: var(--round-slider-high-handle-color);
       }
       svg[disabled] g.handles {
-        stroke: var(--round-slider-disabled-path-color, darkgray);
+        stroke: var(--round-slider-disabled-bar-color, darkgray);
       }
       .handle:focus {
         outline: unset;
