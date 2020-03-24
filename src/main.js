@@ -169,7 +169,6 @@ class RoundSlider extends LitElement {
   }
 
   drag(ev) {
-    if(this.disabled) return;
     if(!this._rotation) return;
     if(this._rotation.type === "focus") return;
 
