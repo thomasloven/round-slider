@@ -41,6 +41,7 @@ class RoundSlider extends LitElement {
     this.dragging = false;
     this.rtl = false;
     this._scale = 1;
+    this.attachedListeners = false;
   }
 
   get _start() {
@@ -54,8 +55,8 @@ class RoundSlider extends LitElement {
     return this._start + this._len;
   }
 
-  get _enabled() {
-    // If handle is disabled
+  get _showHandle() {
+    // If handle is shown
     if(this.readonly) return false;
     if(this.value == null && (this.high == null || this.low == null)) return false;
 
@@ -119,7 +120,7 @@ class RoundSlider extends LitElement {
   }
 
   dragStart(ev) {
-    if(!this._enabled || this.disabled) return;
+    if(!this._showHandle || this.disabled) return;
 
     let handle = ev.target;    
 
@@ -216,16 +217,6 @@ class RoundSlider extends LitElement {
         this._dragpos(this[handle.id] + this.step);
   }
 
-  firstUpdated() {
-    if(!this._enabled || this.disabled) return;
-
-    document.addEventListener('mouseup', this.dragEnd.bind(this));
-    document.addEventListener('touchend', this.dragEnd.bind(this), {passive: false});
-    document.addEventListener('mousemove', this.drag.bind(this));
-    document.addEventListener('touchmove', this.drag.bind(this), {passive: false});
-    document.addEventListener('keydown', this._keyStep.bind(this));
-  }
-
   updated(changedProperties) {
 
     // Workaround for vector-effect not working in IE and pre-Chromium Edge
@@ -243,9 +234,26 @@ class RoundSlider extends LitElement {
     const rect = this.shadowRoot.querySelector("svg").getBoundingClientRect();
     const scale = Math.max(rect.width, rect.height);
     this._scale = 2/scale;
+
+    if(changedProperties.has("readonly") || changedProperties.has("disabled")) {
+      if(this._showHandle && !this.disabled && !this.attachedListeners) {
+        document.addEventListener('mouseup', this.dragEnd.bind(this));
+        document.addEventListener('touchend', this.dragEnd.bind(this), {passive: false});
+        document.addEventListener('mousemove', this.drag.bind(this));
+        document.addEventListener('touchmove', this.drag.bind(this), {passive: false});
+        document.addEventListener('keydown', this._keyStep.bind(this));
+        this.attachedListeners = true;
+      }
+      else if((!this._showHandle || this.disabled) && this.attachedListeners) {
+        document.removeEventListener('mouseup', this.dragEnd.bind(this));
+        document.removeEventListener('touchend', this.dragEnd.bind(this), {passive: false});
+        document.removeEventListener('mousemove', this.drag.bind(this));
+        document.removeEventListener('touchmove', this.drag.bind(this), {passive: false});
+        document.removeEventListener('keydown', this._keyStep.bind(this));
+        this.attachedListeners = false;
+      }
+    }
   }
-
-
 
   _renderArc(start, end) {
     const diff = end-start;
@@ -326,7 +334,7 @@ class RoundSlider extends LitElement {
         </g>
 
         <g class="handles">
-        ${ this._enabled
+        ${ this._showHandle
           ? this.low != null
               ? this._reverseOrder
                 ? html`${this._renderHandle("high")} ${this._renderHandle("low")}`
@@ -360,7 +368,7 @@ class RoundSlider extends LitElement {
         stroke: var(--round-slider-bar-color, deepskyblue);
       }
       svg[disabled] .bar {
-        stroke: var(--round-slider-disabled-path-color, darkgray);
+        stroke: var(--round-slider-disabled-bar-color, darkgray);
       }
       g.handles {
         stroke: var(--round-slider-handle-color, var(--round-slider-bar-color, deepskyblue));
