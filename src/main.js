@@ -235,6 +235,7 @@ class RoundSlider extends LitElement {
     const rect = this.shadowRoot.querySelector("svg").getBoundingClientRect();
     const scale = Math.max(rect.width, rect.height);
     this._scale = 2/scale;
+    
     document.addEventListener('mouseup', this.dragEnd.bind(this));
     document.addEventListener('touchend', this.dragEnd.bind(this), {passive: false});
     document.addEventListener('mousemove', this.drag.bind(this));
