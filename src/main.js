@@ -121,8 +121,7 @@ class RoundSlider extends LitElement {
 
   dragStart(ev) {
     if(!this._showHandle || this.disabled) return;
-
-    let handle = ev.target;    
+    let handle = ev.target;
 
     // Avoid double events mouseDown->focus
     if(this._rotation && this._rotation.type !== "focus") return;
@@ -141,6 +140,7 @@ class RoundSlider extends LitElement {
   }
 
   dragEnd(ev) {
+    if(!this._showHandle || this.disabled) return;
     if(!this._rotation) return;
 
     const handle = this._rotation.handle;
@@ -169,6 +169,7 @@ class RoundSlider extends LitElement {
   }
 
   drag(ev) {
+    if(!this._showHandle || this.disabled) return;
     if(!this._rotation) return;
     if(this._rotation.type === "focus") return;
 
@@ -202,6 +203,7 @@ class RoundSlider extends LitElement {
   }
 
   _keyStep(ev) {
+    if(!this._showHandle || this.disabled) return;
     if(!this._rotation) return;
     const handle = this._rotation.handle;
     if(ev.key === "ArrowLeft")
@@ -233,25 +235,11 @@ class RoundSlider extends LitElement {
     const rect = this.shadowRoot.querySelector("svg").getBoundingClientRect();
     const scale = Math.max(rect.width, rect.height);
     this._scale = 2/scale;
-
-    if(changedProperties.has("readonly") || changedProperties.has("disabled")) {
-      if(this._showHandle && !this.disabled && !this.attachedListeners) {
-        document.addEventListener('mouseup', this.dragEnd.bind(this));
-        document.addEventListener('touchend', this.dragEnd.bind(this), {passive: false});
-        document.addEventListener('mousemove', this.drag.bind(this));
-        document.addEventListener('touchmove', this.drag.bind(this), {passive: false});
-        document.addEventListener('keydown', this._keyStep.bind(this));
-        this.attachedListeners = true;
-      }
-      else if((!this._showHandle || this.disabled) && this.attachedListeners) {
-        document.removeEventListener('mouseup', this.dragEnd.bind(this));
-        document.removeEventListener('touchend', this.dragEnd.bind(this), {passive: false});
-        document.removeEventListener('mousemove', this.drag.bind(this));
-        document.removeEventListener('touchmove', this.drag.bind(this), {passive: false});
-        document.removeEventListener('keydown', this._keyStep.bind(this));
-        this.attachedListeners = false;
-      }
-    }
+    document.addEventListener('mouseup', this.dragEnd.bind(this));
+    document.addEventListener('touchend', this.dragEnd.bind(this), {passive: false});
+    document.addEventListener('mousemove', this.drag.bind(this));
+    document.addEventListener('touchmove', this.drag.bind(this), {passive: false});
+    document.addEventListener('keydown', this._keyStep.bind(this));
   }
 
   _renderArc(start, end) {
