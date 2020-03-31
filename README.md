@@ -21,6 +21,7 @@ A simple round slider webcomponent - [demo](https://rawcdn.githack.com/thomaslov
 - `handleSize` - Radius of handle in pixels (default: 6)
 - `handleZoom` - The factor the handle size scales when dragged (default: 1.5)
 - `disabled` - Boolean property disabling the slider (default: false)
+- `readonly` - Boolean property disabling slider events (default: false)
 - `rtl` - Boolean property to have the slider move Right to Left (default: false)
 
 

@@ -19,6 +19,7 @@ class RoundSlider extends LitElement {
       arcLength: {type: Number},
       handleSize: {type: Number},
       handleZoom: {type: Number},
+      readonly: {type: Boolean},
       disabled: {type: Boolean},
       dragging: {type: Boolean, reflect: true},
       rtl: {type: Boolean},
@@ -35,10 +36,12 @@ class RoundSlider extends LitElement {
     this.arcLength = 270;
     this.handleSize = 6;
     this.handleZoom = 1.5;
+    this.readonly = false;
     this.disabled = false;
     this.dragging = false;
     this.rtl = false;
     this._scale = 1;
+    this.attachedListeners = false;
   }
 
   get _start() {
@@ -52,9 +55,9 @@ class RoundSlider extends LitElement {
     return this._start + this._len;
   }
 
-  get _enabled() {
-    // If handle is disabled
-    if(this.disabled) return false;
+  get _showHandle() {
+    // If handle is shown
+    if(this.readonly) return false;
     if(this.value == null && (this.high == null || this.low == null)) return false;
 
     if(this.value != null && (this.value > this.max || this.value < this.min)) return false;
@@ -117,6 +120,7 @@ class RoundSlider extends LitElement {
   }
 
   dragStart(ev) {
+    if(!this._showHandle || this.disabled) return;
     let handle = ev.target;
 
     // Avoid double events mouseDown->focus
@@ -136,6 +140,7 @@ class RoundSlider extends LitElement {
   }
 
   dragEnd(ev) {
+    if(!this._showHandle || this.disabled) return;
     if(!this._rotation) return;
 
     const handle = this._rotation.handle;
@@ -164,6 +169,7 @@ class RoundSlider extends LitElement {
   }
 
   drag(ev) {
+    if(!this._showHandle || this.disabled) return;
     if(!this._rotation) return;
     if(this._rotation.type === "focus") return;
 
@@ -197,6 +203,7 @@ class RoundSlider extends LitElement {
   }
 
   _keyStep(ev) {
+    if(!this._showHandle || this.disabled) return;
     if(!this._rotation) return;
     const handle = this._rotation.handle;
     if(ev.key === "ArrowLeft")
@@ -237,8 +244,6 @@ class RoundSlider extends LitElement {
     const scale = Math.max(rect.width, rect.height);
     this._scale = 2/scale;
   }
-
-
 
   _renderArc(start, end) {
     const diff = end-start;
@@ -299,6 +304,7 @@ class RoundSlider extends LitElement {
         xmln="http://www.w3.org/2000/svg"
         viewBox="${-view.left} ${-view.up} ${view.width} ${view.height}"
         style="margin: ${this.handleSize*this.handleZoom}px;"
+        ?disabled=${this.disabled}
         focusable="false"
       >
         <g class="slider">
@@ -307,22 +313,18 @@ class RoundSlider extends LitElement {
             d=${this._renderArc(this._start, this._end)}
             vector-effect="non-scaling-stroke"
           />
-          ${ this._enabled
-            ? svg`
-              <path
-                class="bar"
-                vector-effect="non-scaling-stroke"
-                d=${this._renderArc(
-                  this._value2angle(this.low != null ? this.low : this.min),
-                  this._value2angle(this.high != null ? this.high : this.value)
-                )}
-              />`
-            : ``
-          }
+          <path
+            class="bar"
+            vector-effect="non-scaling-stroke"
+            d=${this._renderArc(
+              this._value2angle(this.low != null ? this.low : this.min),
+              this._value2angle(this.high != null ? this.high : this.value)
+            )}
+          />
         </g>
 
         <g class="handles">
-        ${ this._enabled
+        ${ this._showHandle
           ? this.low != null
               ? this._reverseOrder
                 ? html`${this._renderHandle("high")} ${this._renderHandle("low")}`
@@ -355,6 +357,9 @@ class RoundSlider extends LitElement {
       .bar {
         stroke: var(--round-slider-bar-color, deepskyblue);
       }
+      svg[disabled] .bar {
+        stroke: var(--round-slider-disabled-bar-color, darkgray);
+      }
       g.handles {
         stroke: var(--round-slider-handle-color, var(--round-slider-bar-color, deepskyblue));
         stroke-linecap: round;
@@ -364,6 +369,9 @@ class RoundSlider extends LitElement {
       }
       g.high.handle {
         stroke: var(--round-slider-high-handle-color);
+      }
+      svg[disabled] g.handles {
+        stroke: var(--round-slider-disabled-bar-color, darkgray);
       }
       .handle:focus {
         outline: unset;

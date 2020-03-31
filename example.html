@@ -3,9 +3,9 @@
   <head>
     <title>Round-slider demo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://unpkg.com/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
-    <script src="https://unpkg.com/@thomasloven/round-slider" type="module"></script>
-    <!--<script src="round-slider.js" type="module"></script>-->
+    <!--<script src="https://unpkg.com/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+    <script src="https://unpkg.com/@thomasloven/round-slider" type="module"></script>-->
+    <script src="round-slider.js" type="module"></script>
   </head>
   <body style="margin-left: 24px">
     <style>
@@ -109,6 +109,18 @@
       value=50
       rtl
     ></round-slider>
+
+    <h2>Used as a gauge</h2>
+    <round-slider
+    value=50
+    readonly
+    startAngle=180
+    arcLength=180
+    style="
+      --round-slider-path-width: 30px;
+      --round-slider-linecap: butt;
+    "
+  ></round-slider>
 
     <script>
       const setValue = function(value, active) {
