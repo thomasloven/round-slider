@@ -125,7 +125,7 @@
     <script>
       const setValue = function(value, active) {
         document.querySelectorAll("round-slider").forEach(function(el) {
-          if(!el.value) return;
+          if(el.value === undefined) return;
           el.value = value;
         });
         const span = document.querySelector("#value");
@@ -137,7 +137,7 @@
       }
       const setLow = function(value, active) {
         document.querySelectorAll("round-slider").forEach(function(el) {
-          if(!el.low) return;
+          if(el.low === undefined) return;
           el.low = value;
         });
         const span = document.querySelector("#low");
@@ -149,7 +149,7 @@
       }
       const setHigh = function(value, active) {
         document.querySelectorAll("round-slider").forEach(function(el) {
-          if(!el.high) return;
+          if(el.high === undefined) return;
           el.high = value;
         });
         const span = document.querySelector("#high");

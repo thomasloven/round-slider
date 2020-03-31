@@ -1,5 +1,5 @@
-import resolve from "rollup-plugin-node-resolve";
-import minify from "rollup-plugin-babel-minify";
+import resolve from "@rollup/plugin-node-resolve";
+import { terser } from "rollup-plugin-terser";
 
 export default {
   input: "./src/main.js",
@@ -8,5 +8,5 @@ export default {
     format: "cjs",
     compact: true
   },
-  plugins: [resolve(), minify({ comments: false })]
+  plugins: [resolve(), terser()]
 };

@@ -8,9 +8,9 @@
     "lit-element": "^2.2.1"
   },
   "devDependencies": {
-    "rollup": "^1.20.3",
-    "rollup-plugin-babel-minify": "^9.0.0",
-    "rollup-plugin-node-resolve": "^5.2.0"
+    "@rollup/plugin-node-resolve": "^7.1.1",
+    "rollup": "^1.32.1",
+    "rollup-plugin-terser": "^5.3.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -18,7 +18,12 @@
     "watch": "rollup -w -c",
     "prepublishOnly": "rollup -c"
   },
-  "keywords": ["slider", "round-slider", "webcomponent", "litElement"],
+  "keywords": [
+    "slider",
+    "round-slider",
+    "webcomponent",
+    "litElement"
+  ],
   "author": "thomasloven",
   "license": "MIT",
   "files": [
