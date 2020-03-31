@@ -218,6 +218,14 @@ class RoundSlider extends LitElement {
         this._dragpos(this[handle.id] + this.step);
   }
 
+  firstUpdated() {
+    document.addEventListener('mouseup', this.dragEnd.bind(this));
+    document.addEventListener('touchend', this.dragEnd.bind(this), {passive: false});
+    document.addEventListener('mousemove', this.drag.bind(this));
+    document.addEventListener('touchmove', this.drag.bind(this), {passive: false});
+    document.addEventListener('keydown', this._keyStep.bind(this));
+  }
+
   updated(changedProperties) {
 
     // Workaround for vector-effect not working in IE and pre-Chromium Edge
@@ -235,12 +243,6 @@ class RoundSlider extends LitElement {
     const rect = this.shadowRoot.querySelector("svg").getBoundingClientRect();
     const scale = Math.max(rect.width, rect.height);
     this._scale = 2/scale;
-    
-    document.addEventListener('mouseup', this.dragEnd.bind(this));
-    document.addEventListener('touchend', this.dragEnd.bind(this), {passive: false});
-    document.addEventListener('mousemove', this.drag.bind(this));
-    document.addEventListener('touchmove', this.drag.bind(this), {passive: false});
-    document.addEventListener('keydown', this._keyStep.bind(this));
   }
 
   _renderArc(start, end) {
