@@ -24,6 +24,9 @@ class RoundSlider extends LitElement {
       dragging: {type: Boolean, reflect: true},
       rtl: {type: Boolean},
       _scale: {type: Number},
+      valueLabel: {type: String},
+      lowLabel: {type: String},
+      highLabel: {type: String},
     }
   }
 
@@ -206,16 +209,28 @@ class RoundSlider extends LitElement {
     if(!this._showHandle || this.disabled) return;
     if(!this._rotation) return;
     const handle = this._rotation.handle;
-    if(ev.key === "ArrowLeft")
+    if(ev.key === "ArrowLeft" || ev.key === "ArrowDown") {
+      ev.preventDefault();
       if(this.rtl)
         this._dragpos(this[handle.id] + this.step);
       else
         this._dragpos(this[handle.id] - this.step);
-    if(ev.key === "ArrowRight")
+    }
+    if(ev.key === "ArrowRight" || ev.key === "ArrowUp") {
+      ev.preventDefault();
       if(this.rtl)
         this._dragpos(this[handle.id] - this.step);
       else
         this._dragpos(this[handle.id] + this.step);
+    }
+    if(ev.key === "Home") {
+      ev.preventDefault();
+      this._dragpos(this.min);
+    }
+    if(ev.key === "End") {
+      ev.preventDefault();
+      this._dragpos(this.max);
+    }
   }
 
   firstUpdated() {
@@ -261,6 +276,11 @@ class RoundSlider extends LitElement {
   _renderHandle(id) {
     const theta = this._value2angle(this[id]);
     const pos = this._angle2xy(theta);
+    const label = {
+      value: this.valueLabel,
+      low: this.lowLabel,
+      high: this.highLabel
+    }[id] || "";
 
     // Two handles are drawn. One visible, and one invisible that's twice as
     // big. Makes it easier to click.
@@ -289,6 +309,12 @@ class RoundSlider extends LitElement {
           tabindex="0"
           @focus=${this.dragStart}
           @blur=${this.dragEnd}
+          role="slider"
+          aria-valuemin=${this.min}
+          aria-valuemax=${this.max}
+          aria-valuenow=${this[id]}
+          aria-disabled=${this.disabled}
+          aria-label=${label || ""}
           />
         </g>
       `

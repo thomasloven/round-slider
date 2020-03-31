@@ -24,6 +24,9 @@ A simple round slider webcomponent - [demo](https://rawcdn.githack.com/thomaslov
 - `readonly` - Boolean property disabling slider events (default: false)
 - `rtl` - Boolean property to have the slider move Right to Left (default: false)
 
+- `valueLabel` - Value to apply to `aria-label` property of value handle.
+- `lowLabel` - Value to apply to `aria-label` property of low handle.
+- `highLabel` - Value to apply to `aria-label` property of high handle.
 
 ## Events
 
