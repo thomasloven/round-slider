@@ -243,21 +243,39 @@ class RoundSlider extends LitElement {
 
   updated(changedProperties) {
 
+    // Adjust margin in the bar slider stroke width is greater than the handle size
+    if(this.shadowRoot.querySelector(".slider")) {
+      const styles = window.getComputedStyle(this.shadowRoot.querySelector(".slider"));
+      if (styles && styles['strokeWidth']) {
+        const stroke = parseFloat(styles['strokeWidth'])
+        if (stroke > this.handleSize*this.handleZoom) {
+          const view = this._boundaries;
+          const margin = `
+          ${stroke/2*Math.abs(view.up)}px
+          ${stroke/2*Math.abs(view.right)}px
+          ${stroke/2*Math.abs(view.down)}px
+          ${stroke/2*Math.abs(view.left)}px`;
+          this.shadowRoot.querySelector("svg").style.margin = margin;
+        }
+      }
+    }
+
     // Workaround for vector-effect not working in IE and pre-Chromium Edge
     // That's also why the _scale property exists
     if(this.shadowRoot.querySelector("svg")
-    && this.shadowRoot.querySelector("svg").style.vectorEffect !== undefined)
-      return;
-    if(changedProperties.has("_scale") && this._scale != 1) {
-      this.shadowRoot.querySelector("svg").querySelectorAll("path").forEach((e) => {
-        if(e.getAttribute('stroke-width')) return;
-        const orig = parseFloat(getComputedStyle(e).getPropertyValue('stroke-width'));
-        e.style.strokeWidth = `${orig*this._scale}px`;
-      });
+    && this.shadowRoot.querySelector("svg").style.vectorEffect === undefined) {
+      if(changedProperties.has("_scale") && this._scale != 1) {
+        this.shadowRoot.querySelector("svg").querySelectorAll("path").forEach((e) => {
+          if(e.getAttribute('stroke-width')) return;
+          const orig = parseFloat(getComputedStyle(e).getPropertyValue('stroke-width'));
+          e.style.strokeWidth = `${orig*this._scale}px`;
+        });
+      }
+      const rect = this.shadowRoot.querySelector("svg").getBoundingClientRect();
+      const scale = Math.max(rect.width, rect.height);
+      this._scale = 2/scale;
     }
-    const rect = this.shadowRoot.querySelector("svg").getBoundingClientRect();
-    const scale = Math.max(rect.width, rect.height);
-    this._scale = 2/scale;
+
   }
 
   _renderArc(start, end) {
@@ -371,6 +389,7 @@ class RoundSlider extends LitElement {
       }
       svg {
         overflow: visible;
+        display: block;
       }
       .slider {
         fill: none;
