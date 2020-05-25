@@ -388,6 +388,9 @@ class RoundSlider extends LitElement {
         overflow: visible;
         display: block;
       }
+      path {
+        transition: stroke 1s;
+      }
       .slider {
         fill: none;
         stroke-width: var(--round-slider-path-width, 3);
