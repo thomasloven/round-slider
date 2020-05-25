@@ -433,7 +433,7 @@ class RoundSlider extends LitElement {
         display: block;
       }
       path {
-        transition: stroke 1s;
+        transition: stroke 1s ease-out, stroke-width 200ms ease-out;
       }
       .slider {
         fill: none;
