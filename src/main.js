@@ -119,30 +119,60 @@ class RoundSlider extends LitElement {
     };
   }
 
+  _mouse2value(ev) {
+    const mouseX = (ev.type.startsWith("touch")) ? ev.touches[0].clientX : ev.clientX;
+    const mouseY = (ev.type.startsWith("touch")) ? ev.touches[0].clientY : ev.clientY;
+
+    const rect = this.shadowRoot.querySelector("svg").getBoundingClientRect();
+    const boundaries = this._boundaries;
+    const x = mouseX - (rect.left + boundaries.left*rect.width/boundaries.width);
+    const y = mouseY - (rect.top + boundaries.up*rect.height/boundaries.height);
+
+    const angle = this._xy2angle(x,y);
+    const pos = this._angle2value(angle);
+    return pos;
+  }
+
   dragStart(ev) {
     if(!this._showHandle || this.disabled) return;
     let handle = ev.target;
+    let cooldown = undefined;
 
     // Avoid double events mouseDown->focus
     if(this._rotation && this._rotation.type !== "focus") return;
 
+    // If the bar was touched, find the nearest handle and drag from that
+    if(handle.classList.contains("shadowpath")) {
+      if(ev.type === "touchstart")
+        cooldown = window.setTimeout(() => {
+          if(this._rotation) this._rotation.cooldown = undefined;
+        }, 200);
+      if(this.low == null) {
+        handle = this.shadowRoot.querySelector("#value");
+      } else {
+        const mouse = this._mouse2value(ev);
+        if(Math.abs(mouse-this.low) < Math.abs(mouse-this.high)) {
+          handle = this.shadowRoot.querySelector("#low");
+        } else {
+          handle = this.shadowRoot.querySelector("#high");
+        }
+      }
+    }
+
     // If an invisible handle was clicked, switch to the visible counterpart
     if(handle.classList.contains("overflow"))
-      handle = handle.nextElementSibling
+      handle = handle.nextElementSibling;
 
     if(!handle.classList.contains("handle")) return;
     handle.setAttribute('stroke-width', 2*this.handleSize*this.handleZoom*this._scale);
 
     const min = handle.id === "high" ? this.low : this.min;
     const max = handle.id === "low" ? this.high : this.max;
-    this._rotation = { handle, min, max, start: this[handle.id], type: ev.type};
+    this._rotation = { handle, min, max, start: this[handle.id], type: ev.type, cooldown};
     this.dragging = true;
   }
 
-  dragEnd(ev) {
-    if(!this._showHandle || this.disabled) return;
-    if(!this._rotation) return;
-
+  _cleanupRotation() {
     const handle = this._rotation.handle;
     handle.setAttribute('stroke-width', 2*this.handleSize*this._scale);
 
@@ -150,6 +180,14 @@ class RoundSlider extends LitElement {
     this.dragging = false;
 
     handle.blur();
+  }
+
+  dragEnd(ev) {
+    if(!this._showHandle || this.disabled) return;
+    if(!this._rotation) return;
+
+    const handle = this._rotation.handle;
+    this._cleanupRotation();
 
     let event = new CustomEvent('value-changed', {
       detail: {
@@ -171,20 +209,17 @@ class RoundSlider extends LitElement {
   drag(ev) {
     if(!this._showHandle || this.disabled) return;
     if(!this._rotation) return;
+    if(this._rotation.cooldown) {
+      window.clearTimeout(this._rotation.coldown);
+      this._cleanupRotation()
+      return;
+    }
     if(this._rotation.type === "focus") return;
 
     ev.preventDefault();
 
-    const mouseX = (ev.type === "touchmove") ? ev.touches[0].clientX : ev.clientX;
-    const mouseY = (ev.type === "touchmove") ? ev.touches[0].clientY : ev.clientY;
+    const pos = this._mouse2value(ev);
 
-    const rect = this.shadowRoot.querySelector("svg").getBoundingClientRect();
-    const boundaries = this._boundaries;
-    const x = mouseX - (rect.left + boundaries.left*rect.width/boundaries.width);
-    const y = mouseY - (rect.top + boundaries.up*rect.height/boundaries.height);
-
-    const angle = this._xy2angle(x,y);
-    const pos = this._angle2value(angle);
     this._dragpos(pos);
   }
 
@@ -362,6 +397,15 @@ class RoundSlider extends LitElement {
               this._value2angle(this.high != null ? this.high : this.value)
             )}
           />
+          <path
+            class="shadowpath"
+            d=${this._renderArc(this._start, this._end)}
+            vector-effect="non-scaling-stroke"
+            stroke="rgba(0,0,0,0)"
+            stroke-width="${3*this.handleSize*this._scale}"
+            stroke-linecap="butt"
+          />
+
         </g>
 
         <g class="handles">
