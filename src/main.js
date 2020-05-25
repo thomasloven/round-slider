@@ -62,10 +62,6 @@ class RoundSlider extends LitElement {
     // If handle is shown
     if(this.readonly) return false;
     if(this.value == null && (this.high == null || this.low == null)) return false;
-
-    if(this.value != null && (this.value > this.max || this.value < this.min)) return false;
-    if(this.high != null && (this.high > this.max || this.high < this.min)) return false;
-    if(this.low != null && (this.low > this.max || this.low < this.min)) return false;
     return true;
   }
 
@@ -86,6 +82,7 @@ class RoundSlider extends LitElement {
   }
 
   _value2angle(value) {
+    value = Math.min(this.max, Math.max(this.min, value));
     const fraction = (value - this.min)/(this.max - this.min);
     return this._start + fraction * this._len;
   }
