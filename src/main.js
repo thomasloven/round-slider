@@ -192,7 +192,9 @@ class RoundSlider extends LitElement {
     let event = new CustomEvent('value-changed', {
       detail: {
         [handle.id] : this[handle.id],
-      }
+      },
+      bubbles: true,
+      composed: true,
     });
     this.dispatchEvent(event);
 
@@ -232,7 +234,9 @@ class RoundSlider extends LitElement {
     let event = new CustomEvent('value-changing', {
       detail: {
         [handle.id] : pos,
-      }
+      },
+      bubbles: true,
+      composed: true,
     });
     this.dispatchEvent(event);
   }
