@@ -456,7 +456,7 @@ class RoundSlider extends LitElement {
       g.handles {
         stroke: var(--round-slider-handle-color, var(--round-slider-bar-color, deepskyblue));
         stroke-linecap: round;
-        cursor: pointer;
+        cursor: var(--round-slider-handle-cursor, pointer);
       }
       g.low.handle {
         stroke: var(--round-slider-low-handle-color);

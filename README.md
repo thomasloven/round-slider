@@ -46,6 +46,7 @@ The following css variables can be used to change the styles:
 - `--round-slider-handle-color` - color of handles
 - `--round-slider-low-handle-color` - color of low handle (overrides `--round-slider-handle-color`)
 - `--round-slider-high-handle-color` - color of high handle (overrides `--round-slider-handle-color`)
+- `--round-slider-handle-cursor` - cursor to use on the handles (default `pointer`)
 - `--round-slider-path-width` - bar width in pixels (default: 3)
 - `--round-slider-linecap` - svg linecaps of bar (default: `round`)
 
