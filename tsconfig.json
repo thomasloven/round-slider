@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "importHelpers": true,
+    "target": "es2019",
+    "module": "es2020",
+    "declaration": true,
+    "lib": ["es2020", "DOM", "DOM.Iterable"],
+    "outDir": "./",
+    "rootDir": "./src",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true
+  },
+  "include": ["src/*.ts"],
+  "exclude": []
+}
