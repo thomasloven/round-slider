@@ -30,6 +30,7 @@
     "slider",
     "round-slider",
     "webcomponent",
+    "Lit",
     "litElement"
   ],
   "author": "thomasloven",
