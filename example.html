@@ -2,10 +2,10 @@
 <html>
   <head>
     <title>Round-slider demo</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!--<script src="https://unpkg.com/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
     <script src="https://unpkg.com/@thomasloven/round-slider" type="module"></script>-->
-    <script src="round-slider.js" type="module"></script>
+    <script src="round-slider.bundle.js" type="module"></script>
   </head>
   <body style="margin-left: 24px">
     <style>
@@ -17,43 +17,36 @@
         max-width: 400px;
       }
     </style>
-    <h1> Value: <span id="value">50</span></h1>
-    <h2> Default </h2>
+    <h1>Value: <span id="value">50</span></h1>
+    <h2>Default</h2>
+    <round-slider value="50" valueLabel="Temperature"></round-slider>
+    <h2>Styling</h2>
     <round-slider
-      value=50
-      valueLabel="Temperature"
-    ></round-slider>
-    <h2> Styling </h2>
-    <round-slider
-      value=50
-      style="
-        --round-slider-path-color: red;
-      "
+      value="50"
+      style="--round-slider-path-color: red"
     ></round-slider>
     <round-slider
-      value=50
-      style="
-        --round-slider-bar-color: red;
-      "
+      value="50"
+      style="--round-slider-bar-color: red"
     ></round-slider>
     <round-slider
-      value=50
-      style="
-        --round-slider-handle-color: red;
-      "
+      value="50"
+      style="--round-slider-handle-color: red"
     ></round-slider>
 
-    <h2> High/Low sliders (<span id="low">20</span>-<span id="high">70</span>)</h2>
+    <h2>
+      High/Low sliders (<span id="low">20</span>-<span id="high">70</span>)
+    </h2>
     <round-slider
-      low=20
-      high=70
+      low="20"
+      high="70"
       class="highlow"
       highLabel="High"
       lowLabel="Low"
     ></round-slider>
     <round-slider
-      low=20
-      high=70
+      low="20"
+      high="70"
       style="
         --round-slider-low-handle-color: red;
         --round-slider-high-handle-color: green;
@@ -61,126 +54,77 @@
       class="highlow"
     ></round-slider>
 
-    <h2> Disabled </h2>
-    <round-slider
-      value=50
-      disabled
-    ></round-slider>
-    <h2> Start Angle </h2>
-    <round-slider
-      value=50
-      startAngle=0
-    ></round-slider>
-    <round-slider
-      value=50
-      startAngle=90
-    ></round-slider>
-    <round-slider
-      value=50
-      startAngle=180
-    ></round-slider>
-    <round-slider
-      value=50
-      startAngle=270
-    ></round-slider>
+    <h2>Disabled</h2>
+    <round-slider value="50" disabled></round-slider>
+    <h2>Start Angle</h2>
+    <round-slider value="50" startAngle="0"></round-slider>
+    <round-slider value="50" startAngle="90"></round-slider>
+    <round-slider value="50" startAngle="180"></round-slider>
+    <round-slider value="50" startAngle="270"></round-slider>
 
-    <h2> Arc Length </h2>
-    <round-slider
-      value=50
-      arcLength=90
-      startAngle=180
-    ></round-slider>
-    <round-slider
-      value=50
-      arcLength=180
-      startAngle=180
-    ></round-slider>
-    <round-slider
-      value=50
-      arcLength=360
-      startAngle=180
-    ></round-slider>
+    <h2>Arc Length</h2>
+    <round-slider value="50" arcLength="90" startAngle="180"></round-slider>
+    <round-slider value="50" arcLength="180" startAngle="180"></round-slider>
+    <round-slider value="50" arcLength="360" startAngle="180"></round-slider>
 
-    <h2> Dynamic scaling </h2>
-    <round-slider
-      value=50
-      class="scaling"
-    ></round-slider>
+    <h2>Dynamic scaling</h2>
+    <round-slider value="50" class="scaling"></round-slider>
 
-    <h2> Right-to-Left </h2>
-    <round-slider
-      value=50
-      rtl
-    ></round-slider>
+    <h2>Right-to-Left</h2>
+    <round-slider value="50" rtl></round-slider>
 
     <h2>Used as a gauge</h2>
     <round-slider
-    value=50
-    readonly
-    startAngle=180
-    arcLength=180
-    style="
-      --round-slider-path-width: 30px;
-      --round-slider-linecap: butt;
-    "
-  ></round-slider>
+      value="50"
+      readonly
+      startAngle="180"
+      arcLength="180"
+      style="--round-slider-path-width: 30px; --round-slider-linecap: butt"
+    ></round-slider>
 
     <script>
-      const setValue = function(value, active) {
-        document.querySelectorAll("round-slider").forEach(function(el) {
-          if(el.value === undefined) return;
+      const setValue = function (value, active) {
+        document.querySelectorAll("round-slider").forEach(function (el) {
+          if (el.value === undefined) return;
           el.value = value;
         });
         const span = document.querySelector("#value");
-         span.innerHTML = value;
-        if(active)
-          span.style.color = 'red';
-        else
-          span.style.color = 'black';
-      }
-      const setLow = function(value, active) {
-        document.querySelectorAll("round-slider").forEach(function(el) {
-          if(el.low === undefined) return;
+        span.innerHTML = value;
+        if (active) span.style.color = "red";
+        else span.style.color = "black";
+      };
+      const setLow = function (value, active) {
+        document.querySelectorAll("round-slider").forEach(function (el) {
+          if (el.low === undefined) return;
           el.low = value;
         });
         const span = document.querySelector("#low");
-         span.innerHTML = value;
-        if(active)
-          span.style.color = 'red';
-        else
-          span.style.color = 'black';
-      }
-      const setHigh = function(value, active) {
-        document.querySelectorAll("round-slider").forEach(function(el) {
-          if(el.high === undefined) return;
+        span.innerHTML = value;
+        if (active) span.style.color = "red";
+        else span.style.color = "black";
+      };
+      const setHigh = function (value, active) {
+        document.querySelectorAll("round-slider").forEach(function (el) {
+          if (el.high === undefined) return;
           el.high = value;
         });
         const span = document.querySelector("#high");
-         span.innerHTML = value;
-        if(active)
-          span.style.color = 'red';
-        else
-          span.style.color = 'black';
-      }
-
+        span.innerHTML = value;
+        if (active) span.style.color = "red";
+        else span.style.color = "black";
+      };
 
       document.querySelectorAll("round-slider").forEach(function (el) {
-        el.addEventListener('value-changed', function(ev) {
-          if(ev.detail.value !== undefined)
-            setValue(ev.detail.value, false);
-          else if(ev.detail.low !== undefined)
-            setLow(ev.detail.low, false);
-          else if(ev.detail.high !== undefined)
-            setHigh(ev.detail.high, false);
+        el.addEventListener("value-changed", function (ev) {
+          if (ev.detail.value !== undefined) setValue(ev.detail.value, false);
+          else if (ev.detail.low !== undefined) setLow(ev.detail.low, false);
+          else if (ev.detail.high !== undefined) setHigh(ev.detail.high, false);
         });
 
-        el.addEventListener('value-changing', function(ev) {
-          if(ev.detail.value !== undefined)
-            setValue(ev.detail.value, true);
-          else if(ev.detail.low !== undefined)
-            setLow(ev.detail.low, true);
-          else if(ev.detail.high !== undefined)
-            setHigh(ev.detail.high, true);
+        el.addEventListener("value-changing", function (ev) {
+          if (ev.detail.value !== undefined) setValue(ev.detail.value, true);
+          else if (ev.detail.low !== undefined) setLow(ev.detail.low, true);
+          else if (ev.detail.high !== undefined) setHigh(ev.detail.high, true);
         });
       });
     </script>
