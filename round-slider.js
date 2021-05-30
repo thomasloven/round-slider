@@ -1,6 +1,6 @@
 import { __decorate } from "tslib";
 import { LitElement, html, css, svg, } from "lit";
-import { property, state } from "lit/decorators";
+import { property, state } from "lit/decorators.js";
 export class RoundSlider extends LitElement {
     constructor() {
         super();

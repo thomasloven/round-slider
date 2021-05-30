@@ -4,7 +4,6 @@
   "description": "",
   "main": "round-slider.cjs",
   "module": "round-slider.js",
-  "browser": "round-slider.iife.js",
   "typings": "round-slider.d.ts",
   "dependencies": {
     "lit": "^2.0.0-rc.2",

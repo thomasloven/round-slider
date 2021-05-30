@@ -8,7 +8,7 @@ import {
   PropertyValues,
   CSSResultGroup,
 } from "lit";
-import { property, state } from "lit/decorators";
+import { property, state } from "lit/decorators.js";
 
 export class RoundSlider extends LitElement {
   @property({ type: Number }) public value: number;
