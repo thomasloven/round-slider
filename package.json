@@ -1,6 +1,6 @@
 {
   "name": "@thomasloven/round-slider",
-  "version": "0.5.2",
+  "version": "0.5.4",
   "description": "",
   "main": "round-slider.cjs",
   "module": "round-slider.js",
