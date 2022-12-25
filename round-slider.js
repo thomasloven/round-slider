@@ -15,6 +15,7 @@ export class RoundSlider extends LitElement {
         this.disabled = false;
         this.dragging = false;
         this.rtl = false;
+        this.outside = false;
         this._scale = 1;
         this.dragEnd = this.dragEnd.bind(this);
         this.drag = this.drag.bind(this);
@@ -71,7 +72,7 @@ export class RoundSlider extends LitElement {
     _xy2angle(x, y) {
         if (this.rtl)
             x = -x;
-        return (Math.atan2(y, x) - this._start + 2 * Math.PI) % (2 * Math.PI);
+        return (Math.atan2(y, x) - this._start + 8 * Math.PI) % (2 * Math.PI);
     }
     _value2angle(value) {
         value = Math.min(this.max, Math.max(this.min, value));
@@ -370,11 +371,28 @@ export class RoundSlider extends LitElement {
             d=${this._renderArc(this._start, this._end)}
             vector-effect="non-scaling-stroke"
           />
+          <g class="bar">
+            ${this.low != null && this.high != null && this.outside
+            ? svg `
+          <path
+            class="bar low"
+            vector-effect="non-scaling-stroke"
+            d=${this._renderArc(this._value2angle(this.min), this._value2angle(this.low))}
+          />
+          <path
+            class="bar high"
+            vector-effect="non-scaling-stroke"
+            d=${this._renderArc(this._value2angle(this.high), this._value2angle(this.max))}
+          />
+          `
+            : svg `
           <path
             class="bar"
             vector-effect="non-scaling-stroke"
             d=${this._renderArc(this._value2angle(this.low != null ? this.low : this.min), this._value2angle(this.high != null ? this.high : this.value))}
           />
+          `}
+          </g>
           <path
             class="shadowpath"
             d=${this._renderArc(this._start, this._end)}
@@ -418,8 +436,14 @@ export class RoundSlider extends LitElement {
       .path {
         stroke: var(--round-slider-path-color, lightgray);
       }
-      .bar {
+      g.bar {
         stroke: var(--round-slider-bar-color, deepskyblue);
+      }
+      .bar.low {
+        stroke: var(--round-slider-low-bar-color);
+      }
+      .bar.high {
+        stroke: var(--round-slider-high-bar-color);
       }
       svg[disabled] .bar {
         stroke: var(--round-slider-disabled-bar-color, darkgray);
@@ -498,6 +522,9 @@ __decorate([
 __decorate([
     property()
 ], RoundSlider.prototype, "highLabel", void 0);
+__decorate([
+    property({ type: Boolean })
+], RoundSlider.prototype, "outside", void 0);
 __decorate([
     state()
 ], RoundSlider.prototype, "_scale", void 0);

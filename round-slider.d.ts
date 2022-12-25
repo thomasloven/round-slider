@@ -17,6 +17,7 @@ export declare class RoundSlider extends LitElement {
     valueLabel: string;
     lowLabel: string;
     highLabel: string;
+    outside: boolean;
     private _scale;
     private _reverseOrder?;
     private _rotation?;
