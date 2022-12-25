@@ -106,7 +106,7 @@ export class RoundSlider extends LitElement {
 
   private _xy2angle(x: number, y: number): number {
     if (this.rtl) x = -x;
-    return (Math.atan2(y, x) - this._start + 2 * Math.PI) % (2 * Math.PI);
+    return (Math.atan2(y, x) - this._start + 8 * Math.PI) % (2 * Math.PI);
   }
 
   private _value2angle(value: number): number {
