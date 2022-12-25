@@ -17,10 +17,9 @@
         max-width: 400px;
       }
     </style>
-    <h1>Value: <span id="value">50</span></h1>
-    <h2>Default</h2>
+    <h2>Default (<span class="value">50</span>)</h2>
     <round-slider value="50" valueLabel="Temperature"></round-slider>
-    <h2>Styling</h2>
+    <h2>Styling (<span class="value">50</span>)</h2>
     <round-slider
       value="50"
       style="--round-slider-path-color: red"
@@ -35,7 +34,7 @@
     ></round-slider>
 
     <h2>
-      High/Low sliders (<span id="low">20</span>-<span id="high">70</span>)
+      High/Low sliders (<span class="low">20</span>-<span class="high">70</span>)
     </h2>
     <round-slider
       low="20"
@@ -56,24 +55,24 @@
 
     <h2>Disabled</h2>
     <round-slider value="50" disabled></round-slider>
-    <h2>Start Angle</h2>
+    <h2>Start Angle (<span class="value">50</span>)</h2>
     <round-slider value="50" startAngle="0"></round-slider>
     <round-slider value="50" startAngle="90"></round-slider>
     <round-slider value="50" startAngle="180"></round-slider>
     <round-slider value="50" startAngle="270"></round-slider>
 
-    <h2>Arc Length</h2>
+    <h2>Arc Length (<span class="value">50</span>)</h2>
     <round-slider value="50" arcLength="90" startAngle="180"></round-slider>
     <round-slider value="50" arcLength="180" startAngle="180"></round-slider>
     <round-slider value="50" arcLength="360" startAngle="180"></round-slider>
 
-    <h2>Dynamic scaling</h2>
+    <h2>Dynamic scaling (<span class="value">50</span>)</h2>
     <round-slider value="50" class="scaling"></round-slider>
 
-    <h2>Right-to-Left</h2>
+    <h2>Right-to-Left (<span class="value">50</span>)</h2>
     <round-slider value="50" rtl></round-slider>
 
-    <h2>Outside-in</h2>
+    <h2>Outside-in (<span class="low">20</span>-<span class="high">70</span>)</h2>
     <round-slider
       low="20"
       high="70"
@@ -95,7 +94,7 @@
       outside="true"
     ></round-slider>
 
-    <h2>Used as a gauge</h2>
+    <h2>Used as a gauge (<span class="value">50</span>)</h2>
     <round-slider
       value="50"
       readonly
@@ -110,30 +109,33 @@
           if (el.value === undefined) return;
           el.value = value;
         });
-        const span = document.querySelector("#value");
-        span.innerHTML = value;
-        if (active) span.style.color = "red";
-        else span.style.color = "black";
+        const span = document.querySelectorAll("span.value").forEach(function (el) {
+          el.innerHTML = value;
+          if (active) el.style.color = "red";
+          else el.style.color = "black";
+        });
       };
       const setLow = function (value, active) {
         document.querySelectorAll("round-slider").forEach(function (el) {
           if (el.low === undefined) return;
           el.low = value;
         });
-        const span = document.querySelector("#low");
-        span.innerHTML = value;
-        if (active) span.style.color = "red";
-        else span.style.color = "black";
+        const span = document.querySelectorAll("span.low").forEach(function (el) {
+          el.innerHTML = value;
+          if (active) el.style.color = "red";
+          else el.style.color = "black";
+        });
       };
       const setHigh = function (value, active) {
         document.querySelectorAll("round-slider").forEach(function (el) {
           if (el.high === undefined) return;
           el.high = value;
         });
-        const span = document.querySelector("#high");
-        span.innerHTML = value;
-        if (active) span.style.color = "red";
-        else span.style.color = "black";
+        const span = document.querySelectorAll("span.high").forEach(function (el) {
+          el.innerHTML = value;
+          if (active) el.style.color = "red";
+          else el.style.color = "black";
+        });
       };
 
       document.querySelectorAll("round-slider").forEach(function (el) {
