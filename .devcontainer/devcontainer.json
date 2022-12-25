@@ -1,0 +1,27 @@
+{
+    "name": "round-slider",
+    "image": "mcr.microsoft.com/devcontainers/typescript-node",
+    "settings": {
+      "files.eol": "\n",
+      "editor.tabSize": 2,
+      "editor.formatOnPaste": false,
+      "editor.formatOnSave": true,
+      "editor.formatOnType": true,
+      "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+      },
+      "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+      },
+      "files.trimTrailingWhitespace": true,
+    },
+    "extensions": [
+      "dbaeumer.vscode-eslint",
+      "ms-vscode.vscode-typescript-tslint-plugin",
+      "bierner.lit-html",
+      "runem.lit-plugin",
+      "esbenp.prettier-vscode",
+      "spmeesseman.vscode-taskexplorer",
+      "visualstudioexptteam.vscodeintellicode"
+    ]
+  }
