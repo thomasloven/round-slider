@@ -6,7 +6,6 @@ A simple round slider webcomponent - [demo](https://rawcdn.githack.com/thomaslov
 
 ## Properties
 
-
 - `value` - Required for single slider
 - `low` - Required for high/low slider
 - `high` - Required for high/low slider
@@ -24,9 +23,11 @@ A simple round slider webcomponent - [demo](https://rawcdn.githack.com/thomaslov
 - `readonly` - Boolean property disabling slider events (default: false)
 - `rtl` - Boolean property to have the slider move Right to Left (default: false)
 
-- `valueLabel` - Value to apply to `aria-label` property of value handle.
-- `lowLabel` - Value to apply to `aria-label` property of low handle.
-- `highLabel` - Value to apply to `aria-label` property of high handle.
+- `valueLabel` - Value to apply to `aria-label` property of value handle
+- `lowLabel` - Value to apply to `aria-label` property of low handle
+- `highLabel` - Value to apply to `aria-label` property of high handle
+
+- `outside` - if true a high/low slider will fill up from the outsides in of inside out (default: false)
 
 ## Events
 
@@ -46,10 +47,13 @@ The following css variables can be used to change the styles:
 - `--round-slider-handle-color` - color of handles
 - `--round-slider-low-handle-color` - color of low handle (overrides `--round-slider-handle-color`)
 - `--round-slider-high-handle-color` - color of high handle (overrides `--round-slider-handle-color`)
+- `--round-slider-low-bar-color` - color of low bar when `outside` is true (overrides `--round-slider-bar-color`)
+- `--round-slider-high-bar-color` - color of high bar when `outside` is true (overrides `--round-slider-bar-color`)
 - `--round-slider-handle-cursor` - cursor to use on the handles (default `pointer`)
 - `--round-slider-path-width` - bar width in pixels (default: 3)
 - `--round-slider-linecap` - svg linecaps of bar (default: `round`)
 
 ## Examples
+
 See [example.html](https://rawcdn.githack.com/thomasloven/round-slider/master/example.html) for usage examples.
 ![Examples](https://user-images.githubusercontent.com/1299821/64284861-c9bb1c80-cf5a-11e9-830f-11951f84596d.png)

@@ -28,6 +28,7 @@ export class RoundSlider extends LitElement {
   @property() public valueLabel: string;
   @property() public lowLabel: string;
   @property() public highLabel: string;
+  @property({ type: Boolean }) outside = false;
 
   @state() private _scale = 1;
 
@@ -437,6 +438,27 @@ export class RoundSlider extends LitElement {
             d=${this._renderArc(this._start, this._end)}
             vector-effect="non-scaling-stroke"
           />
+          <g class="bar">
+            ${this.low != null && this.high != null && this.outside
+              ? svg`
+          <path
+            class="bar low"
+            vector-effect="non-scaling-stroke"
+            d=${this._renderArc(
+              this._value2angle(this.min),
+              this._value2angle(this.low)
+            )}
+          />
+          <path
+            class="bar high"
+            vector-effect="non-scaling-stroke"
+            d=${this._renderArc(
+              this._value2angle(this.high),
+              this._value2angle(this.max)
+            )}
+          />
+          `
+              : svg`
           <path
             class="bar"
             vector-effect="non-scaling-stroke"
@@ -445,6 +467,8 @@ export class RoundSlider extends LitElement {
               this._value2angle(this.high != null ? this.high : this.value)
             )}
           />
+          `}
+          </g>
           <path
             class="shadowpath"
             d=${this._renderArc(this._start, this._end)}
@@ -493,8 +517,14 @@ export class RoundSlider extends LitElement {
       .path {
         stroke: var(--round-slider-path-color, lightgray);
       }
-      .bar {
+      g.bar {
         stroke: var(--round-slider-bar-color, deepskyblue);
+      }
+      .bar.low {
+        stroke: var(--round-slider-low-bar-color);
+      }
+      .bar.high {
+        stroke: var(--round-slider-high-bar-color);
       }
       svg[disabled] .bar {
         stroke: var(--round-slider-disabled-bar-color, darkgray);

@@ -73,6 +73,28 @@
     <h2>Right-to-Left</h2>
     <round-slider value="50" rtl></round-slider>
 
+    <h2>Outside-in</h2>
+    <round-slider
+      low="20"
+      high="70"
+      class="highlow"
+      highLabel="High"
+      lowLabel="Low"
+      outside="true"
+    ></round-slider>
+    <round-slider
+      low="20"
+      high="70"
+      style="
+        --round-slider-low-handle-color: red;
+        --round-slider-low-bar-color: red;
+        --round-slider-high-handle-color: green;
+        --round-slider-high-bar-color: green;
+      "
+      class="highlow"
+      outside="true"
+    ></round-slider>
+
     <h2>Used as a gauge</h2>
     <round-slider
       value="50"
