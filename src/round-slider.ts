@@ -52,6 +52,7 @@ export class RoundSlider extends LitElement {
   connectedCallback() {
     super.connectedCallback();
     document.addEventListener("mouseup", this.dragEnd);
+    document.addEventListener("mousedown", this.drag);
     document.addEventListener("touchend", this.dragEnd, {
       passive: false,
     });
@@ -65,6 +66,7 @@ export class RoundSlider extends LitElement {
   disconnectedCallback() {
     super.disconnectedCallback();
     document.removeEventListener("mouseup", this.dragEnd);
+    document.removeEventListener("mousedown", this.drag);
     document.removeEventListener("touchend", this.dragEnd);
     document.removeEventListener("mousemove", this.drag);
     document.removeEventListener("touchmove", this.drag);
