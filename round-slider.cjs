@@ -78,6 +78,7 @@ var nt;null===(nt=window.HTMLSlotElement)||void 0===nt||nt.prototype.assignedEle
         viewBox="${-t.left} ${-t.up} ${t.width} ${t.height}"
         style="margin: ${this.handleSize*this.handleZoom}px;"
         ?disabled=${this.disabled}
+        ?readonly=${!this._showHandle}
         focusable="false"
       >
         <g class="slider">
@@ -159,6 +160,16 @@ var nt;null===(nt=window.HTMLSlotElement)||void 0===nt||nt.prototype.assignedEle
         );
         stroke-linecap: round;
         cursor: var(--round-slider-handle-cursor, pointer);
+      }
+      .shadowpath {
+        cursor: var(
+          --round-slider-path-cursor,
+          var(--round-slider-handle-cursor, pointer)
+        );
+      }
+      svg[disabled] .shadowpath,
+      svg[readonly] .shadowpath {
+        cursor: default;
       }
       g.low.handle {
         stroke: var(--round-slider-low-handle-color);
