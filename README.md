@@ -50,6 +50,7 @@ The following css variables can be used to change the styles:
 - `--round-slider-low-bar-color` - color of low bar when `outside` is true (overrides `--round-slider-bar-color`)
 - `--round-slider-high-bar-color` - color of high bar when `outside` is true (overrides `--round-slider-bar-color`)
 - `--round-slider-handle-cursor` - cursor to use on the handles (default `pointer`)
+- `--round-slider-path-cursor` - cursor to use on the track/bar, which can also be clicked or dragged (default: `--round-slider-handle-cursor`)
 - `--round-slider-path-width` - bar width in pixels (default: 3)
 - `--round-slider-linecap` - svg linecaps of bar (default: `round`)
 
